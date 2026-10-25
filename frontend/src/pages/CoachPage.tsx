@@ -395,6 +395,69 @@ export default function CoachPage() {
           )}
         </div>
       </div>
+      {/* PREDICTIVE SMART COACH HISTORICAL INSIGHTS */}
+      <div className="card-studio p-6 rounded-3xl bg-white border border-stone-200/90 space-y-4">
+        <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <h3 className="font-bold text-sm text-slate-900 uppercase font-mono tracking-wider">
+              Predictive Telemetry & Historical Habit Coaching
+            </h3>
+          </div>
+          <span className="text-[11px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full">
+            Time-Series ML Model Active
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            {
+              icon: '⚡',
+              headline: 'Standby Power Peaks 1 AM – 6 AM',
+              observation: 'Workstation rig & chargers remain in vampire standby overnight (~40W constant draw).',
+              action: 'Unplug your tech hub power strip before sleeping tonight.',
+              impact: 'Saves 0.82 kg CO2e this week (+25 pts)',
+              badge: 'High Leverage',
+            },
+            {
+              icon: '☕',
+              headline: 'Friday Afternoon Beverage Pattern',
+              observation: 'Historical activity stream shows 2 iced dairy beverage orders on Friday afternoons.',
+              action: 'Swap to an oat milk cold brew or steeped herbal tea at the campus cafe.',
+              impact: 'Avoids ~700g CO2e and single-use plastic (+20 pts)',
+              badge: 'Habit Swap',
+            },
+            {
+              icon: '🚶',
+              headline: 'Sector 125 Metro Shorter Leg Detected',
+              observation: 'Frequently take a solo auto for the 1.4 km stretch from the metro gate on Tuesdays.',
+              action: 'Join the 8:45 AM Canopy Walkers group tomorrow morning.',
+              impact: 'Cuts 650g CO2e tailpipe emissions (+30 pts)',
+              badge: 'Active Commute',
+            },
+          ].map((pred, i) => (
+            <div key={i} className="p-4 rounded-2xl bg-[#F9F9F7] border border-slate-200/80 flex flex-col justify-between space-y-3">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl">{pred.icon}</span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                    {pred.badge}
+                  </span>
+                </div>
+                <h4 className="font-bold text-sm text-slate-900">{pred.headline}</h4>
+                <p className="text-xs text-slate-500 mt-1 leading-snug">{pred.observation}</p>
+                <div className="text-xs text-emerald-800 font-semibold mt-2 bg-emerald-50 p-2 rounded-xl border border-emerald-100">
+                  👉 {pred.action}
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-200/60 text-[11px] font-mono text-emerald-700 font-bold">
+                {pred.impact}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

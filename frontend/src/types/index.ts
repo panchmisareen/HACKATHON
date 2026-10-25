@@ -160,6 +160,8 @@ export interface DashboardData {
     missions_completed: number;
     points_earned: number;
     week_start: string;
+    target?: number;
+    completion_percentage?: number;
   };
   recent_completions: Array<{
     id: number;
@@ -172,6 +174,26 @@ export interface DashboardData {
     travel_km: number;
     meal_swaps: number;
     bottles_avoided: number;
+    total_co2_mitigated_kg?: number;
+  };
+  milestone_analogies?: {
+    balloons_filled: number;
+    oak_tree_absorption_days: number;
+    smartphone_charges: number;
+    car_km_avoided: number;
+  };
+  streak_assets?: {
+    shield_active: boolean;
+    shields_available: number;
+    freeze_days_available: number;
+    multiplier: string;
+  };
+  virtual_ecosystem?: {
+    name: string;
+    health_percent: number;
+    status: string;
+    streak_days: number;
+    loss_aversion_notice: string;
   };
   streak: number;
   total_points: number;
@@ -184,6 +206,56 @@ export interface DashboardData {
     is_current_user: boolean;
     is_demo: boolean;
   }>;
+}
+
+export interface MarketplaceItem {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  cost_points: number;
+  icon: string;
+  badge: string;
+  in_stock: boolean;
+}
+
+export interface ThriftListing {
+  id: string;
+  title: string;
+  category: string;
+  seller: string;
+  seller_contact?: string;
+  hostel?: string;
+  price_inr: number;
+  avoided_manufacturing_co2_kg: number;
+  condition: string;
+  status: string;
+  description?: string;
+  created_at?: string;
+}
+
+export interface HostelTournamentStanding {
+  rank: number;
+  name: string;
+  type: string;
+  members_active: number;
+  weekly_points: number;
+  co2_mitigated_kg: number;
+  streak_shield_rate: string;
+  trophy: string;
+  perk_reward: string;
+}
+
+export interface UtilityProvider {
+  id: string;
+  name: string;
+  region: string;
+  protocol: string;
+  connected: boolean;
+  last_meter_kwh: number;
+  status: string;
+  peak_kwh?: number;
+  off_peak_kwh?: number;
 }
 
 export interface PassportData {

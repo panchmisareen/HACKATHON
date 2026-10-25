@@ -223,3 +223,105 @@ def get_passport(
         },
         "milestones": milestones,
     }
+
+
+# ==========================================
+# INTER-HOSTEL & INTER-DEPARTMENT TOURNAMENT GRID
+# ==========================================
+HOSTEL_TOURNAMENT_STANDINGS = [
+    {
+        "rank": 1,
+        "name": "Silver Springs Hostel Alpha (Block A)",
+        "type": "hostel",
+        "members_active": 142,
+        "weekly_points": 4820,
+        "co2_mitigated_kg": 184.2,
+        "streak_shield_rate": "92%",
+        "trophy": "🏆 Current Leader",
+        "perk_reward": "50% Off Campus Cafe for All Residents This Friday",
+    },
+    {
+        "rank": 2,
+        "name": "Homi Bhabha Hall of Residence",
+        "type": "hostel",
+        "members_active": 128,
+        "weekly_points": 4410,
+        "co2_mitigated_kg": 162.8,
+        "streak_shield_rate": "88%",
+        "trophy": "🥈 Contender",
+        "perk_reward": "Priority Study Room Booking for Next Term",
+    },
+    {
+        "rank": 3,
+        "name": "Aryabhatta Tower (Block B)",
+        "type": "hostel",
+        "members_active": 115,
+        "weekly_points": 3980,
+        "co2_mitigated_kg": 145.0,
+        "streak_shield_rate": "84%",
+        "trophy": "🥉 Podium",
+        "perk_reward": "Free Campus Cycle Fleet Weekend Pass",
+    },
+    {
+        "rank": 4,
+        "name": "Department of Computer Science & AI",
+        "type": "department",
+        "members_active": 210,
+        "weekly_points": 3840,
+        "co2_mitigated_kg": 140.4,
+        "streak_shield_rate": "79%",
+        "trophy": "Top Academic Dept",
+        "perk_reward": "Institutional Green Computing Badge",
+    },
+    {
+        "rank": 5,
+        "name": "Sarojini Naidu Hall",
+        "type": "hostel",
+        "members_active": 98,
+        "weekly_points": 3420,
+        "co2_mitigated_kg": 125.6,
+        "streak_shield_rate": "81%",
+        "trophy": "Rising Challenger",
+        "perk_reward": "Free Organic Smoothie Coupon",
+    },
+    {
+        "rank": 6,
+        "name": "Biotech & Sustainable Engineering",
+        "type": "department",
+        "members_active": 84,
+        "weekly_points": 2960,
+        "co2_mitigated_kg": 110.2,
+        "streak_shield_rate": "76%",
+        "trophy": "Eco Innovator",
+        "perk_reward": "Research Lab Sustainability Grant Match",
+    },
+]
+
+
+@router.get("/tournaments/hostels")
+def get_hostel_tournaments():
+    """
+    Campus Grid Live: 12 Hostels & Departments actively competing.
+    """
+    return {
+        "tournament_name": "Autumn Campus Cup 2024",
+        "days_remaining": 4,
+        "active_units": 12,
+        "total_campus_co2_avoided_kg": 1284.6,
+        "standings": HOSTEL_TOURNAMENT_STANDINGS,
+        "prize_pool": "Winning hostel earns free campus cafe artisan beverages and grand trophy ceremony.",
+    }
+
+
+@router.get("/tournaments/digital-signage")
+def get_digital_signage_feed():
+    """
+    Public digital signage JSON API feed streaming directly to campus dining hall TV screens.
+    """
+    return {
+        "ticker": "🌿 ECOPULSE LIVE CAMPUS TOURNAMENT — PW IOI NOIDA ✦ TOP HOSTEL: SILVER SPRINGS BLOCK A (4,820 PTS) ✦ 184.2 KG CO2 MITIGATED THIS WEEK",
+        "current_leader": HOSTEL_TOURNAMENT_STANDINGS[0],
+        "top_three": HOSTEL_TOURNAMENT_STANDINGS[:3],
+        "refresh_interval_seconds": 30,
+        "timestamp_utc": "2024-10-25T06:00:00Z",
+    }

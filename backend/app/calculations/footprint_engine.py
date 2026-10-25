@@ -10,8 +10,59 @@ Combines:
 from typing import Dict, Any, List
 
 # ==========================================
-# 1. EXPANDED GEN Z CATEGORIES & EMISSION FACTORS (g CO2e)
+# 1. EXPANDED GEN Z & SCIENTIFIC CATEGORIES & EMISSION FACTORS (g CO2e)
 # ==========================================
+REGIONAL_GRID_FACTORS = {
+    "India (CEA Baseline)": {"factor_kg_kwh": 0.82, "source": "Central Electricity Authority (CEA) India Baseline v19", "desc": "Coal-dominant national grid with rapid solar additions"},
+    "US Average (EPA eGRID)": {"factor_kg_kwh": 0.385, "source": "US EPA eGRID 2024", "desc": "Mixed natural gas, renewables, nuclear, and coal"},
+    "UK National Grid (DEFRA)": {"factor_kg_kwh": 0.207, "source": "UK DEFRA GHG Conversion Factors 2024", "desc": "High wind & gas mix with phased-out coal"},
+    "EU Continental Average": {"factor_kg_kwh": 0.230, "source": "European Environment Agency (EEA) 2024", "desc": "Interconnected European grid mix"},
+    "France (Nuclear / Hydro)": {"factor_kg_kwh": 0.052, "source": "RTE France / IPCC 2024", "desc": "Over 70% nuclear generation + alpine hydro"},
+    "Australia (NEM)": {"factor_kg_kwh": 0.680, "source": "National Greenhouse Accounts (NGA) Factors", "desc": "High coal intensity with growing rooftop solar"},
+    "California (CAISO)": {"factor_kg_kwh": 0.215, "source": "California Air Resources Board (CARB)", "desc": "High solar penetration, hydro, and imported green power"},
+}
+
+DELIVERY_LOGISTICS_FACTORS = {
+    "petrol_scooter": {"factor_kg_km": 0.110, "label": "Petrol Scooter / Bike", "desc": "110g CO2e per km driven"},
+    "ev_two_wheeler": {"factor_kg_km": 0.020, "label": "EV Two-Wheeler Fleet", "desc": "20g CO2e per km on average grid"},
+    "local_walker_bicycle": {"factor_kg_km": 0.000, "label": "Local Walking / Bicycle Courier", "desc": "Zero tailpipe emissions"},
+    "delivery_van": {"factor_kg_km": 0.220, "label": "Delivery Van / Auto", "desc": "220g CO2e per km"},
+    "packaging_baseline": 0.550, # 550g CO2e per takeout container, wrapper, bag set
+}
+
+SCIENTIFIC_CITATIONS = [
+    {
+        "standard": "UK DEFRA / DESNZ 2024",
+        "title": "Government Greenhouse Gas Conversion Factors for Company Reporting",
+        "scope": "Scope 1 (Fuels), Scope 2 (Grid Electricity), Scope 3 (Passenger Travel & Logistics)",
+        "url": "https://www.gov.uk/government/collections/government-conversion-factors-for-company-reporting",
+    },
+    {
+        "standard": "IPCC Sixth Assessment Report (AR6)",
+        "title": "Working Group III: Mitigation of Climate Change (Chapter 5: Demand, Services & Social Aspects)",
+        "scope": "Global baseline diets, enteric fermentation, aviation radiative forcing (1.9x)",
+        "url": "https://www.ipcc.ch/report/ar6/wg3/",
+    },
+    {
+        "standard": "US EPA eGRID 2024",
+        "title": "Emissions & Generation Resource Integrated Database",
+        "scope": "Subregional and national electricity grid emission factors",
+        "url": "https://www.epa.gov/egrid",
+    },
+    {
+        "standard": "CEA India CO2 Baseline Database (v19)",
+        "title": "Central Electricity Authority Baseline Database for the Indian Power Sector",
+        "scope": "National grid average 0.82 kg CO2e / kWh operating margin",
+        "url": "https://cea.nic.in/cdm-co2-baseline-database/",
+    },
+    {
+        "standard": "GHG Protocol",
+        "title": "Corporate Value Chain (Scope 3) Standard & Product Life Cycle Standard",
+        "scope": "End-to-end supply chain accounting principles & boundaries",
+        "url": "https://ghgprotocol.org/",
+    },
+]
+
 GENZ_CATEGORIES = {
     "digital": {
         "title": "Digital & Screen Time",
@@ -66,32 +117,41 @@ GENZ_CATEGORIES = {
         ],
     },
     "food_dining": {
-        "title": "Delivery & Cafe Habits",
-        "icon": "🧋",
-        "description": "Packaging waste, delivery transport, dairy, and food lifecycle",
+        "title": "Delivery, Food & Beverages",
+        "icon": "🥗",
+        "description": "Logistics distance, packaging lifecycle, dietary emissions & beverage choices",
         "items": [
             {
                 "id": "food_delivery_order",
-                "name": "App Food Delivery",
-                "subtext": "Courier ride + containers, wrappers, and bags",
+                "name": "App Food Delivery (Distance-calibrated)",
+                "subtext": "Courier travel distance + container and packaging footprint",
                 "unit": "orders",
                 "factor": 1850.0,
                 "default": 1.0,
                 "step": 1.0,
             },
             {
-                "id": "dairy_latte_boba",
-                "name": "Iced Latte / Boba (Dairy Milk)",
-                "subtext": "Single-use plastic cup + dairy production footprint",
+                "id": "beverages_dairy_caffeine",
+                "name": "Beverages (Coffee, Tea & Dairy Milk)",
+                "subtext": "Cow's milk coffee/tea/boba + single-use cup production",
                 "unit": "cups",
                 "factor": 550.0,
                 "default": 1.0,
                 "step": 1.0,
             },
             {
+                "id": "beverages_plant_based",
+                "name": "Plant-Based Beverages (Oat / Soy / Black Tea)",
+                "subtext": "Plant-milk coffee, steeped tea, or reusable tumbler refill",
+                "unit": "cups",
+                "factor": 180.0,
+                "default": 0.0,
+                "step": 1.0,
+            },
+            {
                 "id": "packaged_beverage",
-                "name": "Single-Use Canned/Bottled Drinks",
-                "subtext": "Energy drinks, cold brews, plastic bottled water",
+                "name": "Single-Use Canned/Bottled Drinks & Sodas",
+                "subtext": "Energy drinks, cold sodas, plastic bottled water",
                 "unit": "cans/bottles",
                 "factor": 160.0,
                 "default": 1.0,
@@ -617,13 +677,29 @@ def calculate_unified_footprint(inputs: Dict[str, Any]) -> Dict[str, Any]:
     transport_monthly = fuel_monthly + pub_monthly + flights_monthly + cabs_monthly + escooter_monthly
 
     # --- 2. Home Energy, AC Cooling & Standby ---
-    elec_bill = float(inputs.get("elecBill", 0.0) or 0.0)
+    grid_region = inputs.get("gridRegion", "India (CEA Baseline)")
+    grid_meta = REGIONAL_GRID_FACTORS.get(grid_region, REGIONAL_GRID_FACTORS["India (CEA Baseline)"])
+    grid_factor_kwh = grid_meta["factor_kg_kwh"]
+
     renewable = inputs.get("renewable", "No")
     renewable_mult = 0.2 if renewable == "Yes" else 1.0
-    elec_monthly = (elec_bill * INDIAN_EMISSION_FACTORS["electricity_per_rupee"]) * renewable_mult
+
+    # Automated Utility API direct metered kWh vs monthly bill fallback
+    utility_kwh = float(inputs.get("utilityKwh", 0.0) or 0.0)
+    if utility_kwh > 0:
+        elec_monthly = (utility_kwh * grid_factor_kwh) * renewable_mult
+        elec_data_source = f"Automated Smart Meter ({utility_kwh:.1f} kWh @ {grid_factor_kwh} kg CO2/kWh)"
+    else:
+        elec_bill = float(inputs.get("elecBill", 0.0) or 0.0)
+        # Average rate ₹8/kWh calibrated to selected grid intensity
+        estimated_kwh = elec_bill / 8.0
+        elec_monthly = (estimated_kwh * grid_factor_kwh) * renewable_mult
+        elec_data_source = f"Bill Estimate ({estimated_kwh:.1f} kWh @ {grid_factor_kwh} kg CO2/kWh)"
 
     ac_hours = float(inputs.get("acCoolingHours", 0.0) or 0.0)
-    ac_monthly = ac_hours * 30.0 * 0.98  # 980g per hour split AC
+    # AC power draw calibrated to selected regional grid
+    ac_kwh_per_hour = 1.2 # average 1.5 ton inverter AC draw
+    ac_monthly = ac_hours * 30.0 * (ac_kwh_per_hour * grid_factor_kwh)
 
     cooking_fuel = inputs.get("cookingFuel", "LPG")
     lpg_count = float(inputs.get("lpgCount", 0.0) or 0.0)
@@ -632,30 +708,42 @@ def calculate_unified_footprint(inputs: Dict[str, Any]) -> Dict[str, Any]:
     elif cooking_fuel == "PNG":
         cooking_monthly = lpg_count * 32.0
     else:
-        cooking_monthly = lpg_count * 18.0
+        # Electric induction powered by selected grid
+        cooking_monthly = (lpg_count * 25.0 * grid_factor_kwh)
 
     standby_rig = inputs.get("standbyRig", "Yes")
-    standby_monthly = (0.32 * 30.0) if standby_rig == "Yes" else 0.0
+    standby_monthly = (0.40 * grid_factor_kwh * 30.0) if standby_rig == "Yes" else 0.0
 
     energy_monthly = (elec_monthly + ac_monthly + cooking_monthly + standby_monthly) / household
 
-    # --- 3. Food, Cafe Habits & App Delivery ---
+    # --- 3. Food, Cafe Habits & App Delivery (Localized Logistics + Beverages) ---
     diet_choice = inputs.get("dietType", "Vegetarian")
     diet_monthly = INDIAN_EMISSION_FACTORS["diet"].get(diet_choice, 130.0)
 
     red_meat = inputs.get("redMeat", "Never")
     meat_monthly = INDIAN_EMISSION_FACTORS["red_meat"].get(red_meat, 0.0)
 
+    # Localized Logistics Matrix for Deliveries:
     food_orders = float(inputs.get("foodOrders", 0.0) or 0.0)
-    food_orders_monthly = food_orders * 1.85  # 1.85 kg per delivery
+    delivery_km = float(inputs.get("deliveryDistanceKm", 5.0) or 5.0)
+    fleet_mode = inputs.get("deliveryFleetMode", "petrol_scooter")
+    fleet_info = DELIVERY_LOGISTICS_FACTORS.get(fleet_mode, DELIVERY_LOGISTICS_FACTORS["petrol_scooter"])
+    delivery_transport_per_order = delivery_km * fleet_info["factor_kg_km"]
+    packaging_per_order = DELIVERY_LOGISTICS_FACTORS["packaging_baseline"]
+    food_orders_monthly = food_orders * (delivery_transport_per_order + packaging_per_order)
 
-    dairy_lattes = float(inputs.get("dairyLattes", 0.0) or 0.0)
-    lattes_monthly = dairy_lattes * 0.55  # 550g per cup
+    # Accurate Beverage Terminology & Matrix:
+    dairy_beverages = float(inputs.get("dairyLattes", inputs.get("beveragesDairy", 0.0)) or 0.0)
+    plant_beverages = float(inputs.get("beveragesPlant", 0.0) or 0.0)
+    canned_beverages = float(inputs.get("beveragesCanned", inputs.get("packagedBeverages", 0.0)) or 0.0)
+    
+    # 550g for cow milk dairy coffee/tea/boba, 180g for plant-based oat/soy/black tea, 160g for canned soda
+    beverages_monthly = (dairy_beverages * 0.550) + (plant_beverages * 0.180) + (canned_beverages * 0.160)
 
     food_waste_week = float(inputs.get("foodWasteKg", 0.0) or 0.0)
     food_waste_monthly = (food_waste_week * 4.3 * INDIAN_EMISSION_FACTORS["food_waste_factor"]) / household
 
-    food_monthly = diet_monthly + meat_monthly + food_orders_monthly + lattes_monthly + food_waste_monthly
+    food_monthly = diet_monthly + meat_monthly + food_orders_monthly + beverages_monthly + food_waste_monthly
 
     # --- 4. E-Commerce, Fast Fashion & Consumer Tech ---
     fast_fashion = float(inputs.get("fastFashion", 0.0) or 0.0)
@@ -794,6 +882,18 @@ def calculate_unified_footprint(inputs: Dict[str, Any]) -> Dict[str, Any]:
             "tip": "Your footprint is well within the sustainable Indian climate chill baseline!",
         })
 
+    # Real-World Relatable Scales & Milestone Analogies:
+    # 1 kg CO2 occupies ~556 liters of gas = approx 36 standard 11-inch party balloons
+    balloons_monthly = int(round(total_monthly * 36))
+    # Mature oak tree absorbs ~55g CO2/day -> ~20 kg CO2/year -> ~1.67 kg/month
+    oak_tree_days_monthly = int(round((total_monthly * 1000.0) / 55.0))
+
+    # Shadow Carbon Pricing Mode ($80 / metric ton compliance rate)
+    shadow_price_per_tonne_usd = 80.0
+    shadow_debt_annual_usd = round(total_annual_tonnes * shadow_price_per_tonne_usd, 2)
+    shadow_debt_monthly_usd = round((total_monthly / 1000.0) * shadow_price_per_tonne_usd, 2)
+    shadow_debt_annual_inr = round(shadow_debt_annual_usd * 84.0, 2)
+
     return {
         "daily_avg_grams": round(daily_avg_grams, 1),
         "daily_avg_kg": round(daily_avg_kg, 2),
@@ -812,5 +912,31 @@ def calculate_unified_footprint(inputs: Dict[str, Any]) -> Dict[str, Any]:
             "status": "Lower than Indian average!" if total_annual_tonnes <= 1.9 else ("Close to Indian urban youth baseline" if total_annual_tonnes <= 3.0 else "Above urban average"),
         },
         "recommendations": recommendations,
+        "milestone_analogies": {
+            "birthday_balloons": balloons_monthly,
+            "oak_tree_absorption_days": oak_tree_days_monthly,
+            "smartphone_charges": equivalents["smartphone_charges_monthly"],
+            "car_km_avoided": equivalents["car_km_monthly"],
+        },
+        "shadow_carbon_pricing": {
+            "price_per_tonne_usd": shadow_price_per_tonne_usd,
+            "monthly_debt_usd": shadow_debt_monthly_usd,
+            "annual_debt_usd": shadow_debt_annual_usd,
+            "annual_debt_inr": shadow_debt_annual_inr,
+            "social_cost_description": "Based on IPCC & US EPA social cost of carbon ($80/ton). Real environmental debt invoice.",
+        },
+        "citations": SCIENTIFIC_CITATIONS,
+        "regional_grid_active": {
+            "region": grid_region,
+            "factor_kg_kwh": grid_factor_kwh,
+            "source": grid_meta["source"],
+            "desc": grid_meta["desc"],
+        },
+        "logistics_matrix": {
+            "delivery_km": delivery_km,
+            "fleet_mode": fleet_mode,
+            "fleet_label": fleet_info["label"],
+            "fleet_factor": fleet_info["factor_kg_km"],
+        },
     }
 

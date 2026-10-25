@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Target, Zap, Trophy, BookOpen, MapPin,
-  Settings, LogOut, Leaf, Menu, X, ChevronRight, Flame, Sparkles, Calculator
+  Settings, LogOut, Leaf, Menu, X, ChevronRight, Flame, Sparkles, Calculator, Recycle, ArrowRightLeft
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getInitials } from '../../utils';
+import AccountSwitcherModal from '../auth/AccountSwitcherModal';
 
 const navItems = [
   { to: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -13,6 +14,7 @@ const navItems = [
   { to: '/app/coach', icon: Zap, label: 'Smart Coach' },
   { to: '/app/impact', icon: Leaf, label: 'Impact Analytics' },
   { to: '/app/calculator', icon: Calculator, label: 'Carbon Engine' },
+  { to: '/app/thrift', icon: Recycle, label: 'Thrift Club' },
   { to: '/app/league', icon: Trophy, label: 'Campus League' },
   { to: '/app/passport', icon: BookOpen, label: 'Eco Passport' },
   { to: '/app/map', icon: MapPin, label: 'Campus Map' },
@@ -24,6 +26,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [switcherOpen, setSwitcherOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -74,6 +77,13 @@ export default function AppLayout() {
                 </span>
               </div>
             </div>
+            <button
+              onClick={() => setSwitcherOpen(true)}
+              title="Switch account on this device"
+              className="p-1.5 rounded-xl hover:bg-white text-slate-400 hover:text-emerald-700 transition-all flex items-center"
+            >
+              <ArrowRightLeft size={14} />
+            </button>
           </div>
         </div>
       )}
@@ -108,28 +118,42 @@ export default function AppLayout() {
       </nav>
 
       {/* Campus Active Pill */}
-      <div className="p-4 m-4 rounded-2xl bg-[#111613] text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none" />
-        <div className="flex items-center gap-2 mb-1.5">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-          </span>
-          <span className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider">CAMPUS GRID LIVE</span>
+      <NavLink
+        to="/app/league"
+        onClick={() => setMobileOpen(false)}
+        className="p-4 m-4 rounded-2xl bg-[#111613] text-white relative overflow-hidden block hover:ring-2 hover:ring-emerald-400/50 transition-all group"
+      >
+        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform" />
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            <span className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider">CAMPUS GRID LIVE</span>
+          </div>
+          <ChevronRight size={13} className="text-emerald-400 group-hover:translate-x-1 transition-transform" />
         </div>
-        <p className="text-xs text-white/70 leading-relaxed">
-          12 Hostels actively logging clean habit missions this term.
+        <p className="text-xs text-white/80 leading-relaxed font-medium">
+          12 Hostels actively competing in Green Cup. View live standings & rewards.
         </p>
-      </div>
+      </NavLink>
 
-      {/* Logout button */}
-      <div className="p-4 border-t border-[#E8E8E4]">
+      {/* Account Switcher and Logout Buttons */}
+      <div className="p-4 border-t border-[#E8E8E4] space-y-1.5">
+        <button
+          onClick={() => setSwitcherOpen(true)}
+          className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all duration-150 w-full"
+        >
+          <ArrowRightLeft size={15} className="text-emerald-600" />
+          <span>Switch Accounts</span>
+        </button>
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150 w-full"
         >
-          <LogOut size={16} />
-          <span>Sign Out</span>
+          <LogOut size={15} />
+          <span>Log Out</span>
         </button>
       </div>
     </div>
@@ -184,12 +208,14 @@ export default function AppLayout() {
             <span className="font-display font-extrabold text-[#0F172A]">EcoPulse</span>
           </div>
           {user && (
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+            <button
+              onClick={() => setSwitcherOpen(true)}
+              title="Switch Account"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ring-2 ring-emerald-500/30"
               style={{ backgroundColor: user.avatar_color || '#15803D' }}
             >
               {getInitials(user.full_name)}
-            </div>
+            </button>
           )}
         </header>
 
@@ -200,6 +226,12 @@ export default function AppLayout() {
           </div>
         </main>
       </div>
+
+      {/* Account Switcher Modal */}
+      <AccountSwitcherModal
+        isOpen={switcherOpen}
+        onClose={() => setSwitcherOpen(false)}
+      />
     </div>
   );
 }

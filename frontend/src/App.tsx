@@ -13,6 +13,7 @@ import LeaguePage from './pages/LeaguePage';
 import PassportPage from './pages/PassportPage';
 import CampusMapPage from './pages/CampusMapPage';
 import GoalsPage from './pages/GoalsPage';
+import ThriftClubPage from './pages/ThriftClubPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -26,7 +27,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/app" element={
         <ProtectedRoute>
           <AppLayout />
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Route path="calculator" element={<CarbonEnginePage />} />
         <Route path="carbon-engine" element={<Navigate to="/app/calculator" replace />} />
         <Route path="league" element={<LeaguePage />} />
+        <Route path="thrift" element={<ThriftClubPage />} />
         <Route path="passport" element={<PassportPage />} />
         <Route path="map" element={<CampusMapPage />} />
         <Route path="goals" element={<GoalsPage />} />

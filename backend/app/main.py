@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import init_db
-from app.api import auth, missions, coach, activity, league, campus, dashboard, calculator
+from app.api import auth, missions, coach, activity, league, campus, dashboard, calculator, marketplace
 
 app = FastAPI(
     title="EcoPulse API",
@@ -41,3 +41,4 @@ app.include_router(league.router, prefix="/api")
 app.include_router(campus.router, prefix="/api")
 app.include_router(dashboard.router, prefix="/api")
 app.include_router(calculator.router, prefix="/api")
+app.include_router(marketplace.router, prefix="/api")

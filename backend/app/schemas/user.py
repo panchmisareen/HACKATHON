@@ -5,12 +5,15 @@ from datetime import datetime
 
 class UserBase(BaseModel):
     email: str = Field(..., description="User email address")
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str = Field(..., min_length=1, max_length=100)
     full_name: str = Field(..., min_length=1, max_length=200)
 
 
-class UserCreate(UserBase):
-    password: str = Field(..., min_length=8)
+class UserCreate(BaseModel):
+    email: str
+    password: str = Field(..., min_length=3)
+    username: Optional[str] = None
+    full_name: Optional[str] = None
 
 
 class UserUpdate(BaseModel):

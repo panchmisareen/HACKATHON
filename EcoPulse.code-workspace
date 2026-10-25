@@ -1,0 +1,23 @@
+{
+  "folders": [
+    {
+      "name": "EcoPulse (Root)",
+      "path": "."
+    },
+    {
+      "name": "Frontend (React + Vite)",
+      "path": "frontend"
+    },
+    {
+      "name": "Backend (FastAPI + Python)",
+      "path": "backend"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:Backend (FastAPI + Python)}/venv/bin/python",
+    "python.analysis.extraPaths": [
+      "${workspaceFolder:Backend (FastAPI + Python)}"
+    ],
+    "editor.tabSize": 2
+  }
+}

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Settings, Target, Save, CheckCircle, User, Edit3 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Settings, Target, Save, CheckCircle, User, Edit3, ArrowRightLeft, LogOut } from 'lucide-react';
 import api from '../services/api';
 import type { Goal, User as UserType } from '../types';
 import { Spinner, ProgressBar } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
+import AccountSwitcherModal from '../components/auth/AccountSwitcherModal';
 
 const GOAL_PRESETS = [
   { category: 'travel', label: '🚴 Active Travel', unit: 'km', period: 'weekly', default: 20, description: 'km walked, cycled, or on transit' },
@@ -13,7 +15,9 @@ const GOAL_PRESETS = [
 ];
 
 export default function GoalsPage() {
-  const { user, updateUser } = useAuth();
+  const navigate = useNavigate();
+  const { user, updateUser, logout } = useAuth();
+  const [switcherOpen, setSwitcherOpen] = useState(false);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
@@ -280,8 +284,33 @@ export default function GoalsPage() {
               {user?.is_demo ? 'Demo' : 'Registered'}
             </span>
           </div>
+
+          <div className="pt-4 mt-2 border-t border-eco-border flex flex-wrap items-center justify-between gap-3">
+            <button
+              onClick={() => setSwitcherOpen(true)}
+              className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 text-xs font-bold flex items-center gap-2 border border-slate-200 transition-all"
+            >
+              <ArrowRightLeft size={14} className="text-emerald-600" />
+              <span>Switch Account</span>
+            </button>
+            <button
+              onClick={() => {
+                logout();
+                navigate('/');
+              }}
+              className="px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold flex items-center gap-2 border border-red-200 transition-all"
+            >
+              <LogOut size={14} />
+              <span>Log Out & Return to Home</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      <AccountSwitcherModal
+        isOpen={switcherOpen}
+        onClose={() => setSwitcherOpen(false)}
+      />
     </div>
   );
 }

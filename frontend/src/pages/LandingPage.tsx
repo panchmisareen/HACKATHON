@@ -4,7 +4,8 @@ import {
   Leaf, ArrowRight, Bike, Salad, Activity, Droplets, Zap,
   Trophy, ShieldCheck, Sparkles, Compass,
   Sliders, ArrowUpRight, BarChart3,
-  Flame, BatteryCharging, CheckCircle2, ChevronRight, Play
+  Flame, BatteryCharging, CheckCircle2, ChevronRight, Play,
+  ArrowRightLeft, LogOut, Users
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../hooks/useAuth';
@@ -13,11 +14,13 @@ import GreenTechCanvas from '../components/greentech/GreenTechCanvas';
 import TiltCard from '../components/greentech/TiltCard';
 import LiveTelemetryBadge from '../components/greentech/LiveTelemetryBadge';
 import EnergyWaveVisualizer from '../components/greentech/EnergyWaveVisualizer';
+import AccountSwitcherModal from '../components/auth/AccountSwitcherModal';
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, login, logout, savedAccounts } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [switcherOpen, setSwitcherOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'travel' | 'meals' | 'movement' | 'hydration'>('travel');
   
   // Interactive Simulator State
@@ -151,28 +154,63 @@ export default function LandingPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3">
+              {/* Sign In always visible & working */}
               <Link
                 to="/login"
-                className="hidden sm:inline-flex text-sm font-semibold text-white/80 hover:text-white px-4 py-2"
+                className="text-xs sm:text-sm font-semibold text-white/90 hover:text-white px-3 py-1.5 rounded-xl hover:bg-white/10 transition-all"
               >
                 Sign In
               </Link>
-              <button
-                onClick={handleDemoLogin}
-                disabled={loading}
-                className="btn-neon text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-2"
-              >
-                {loading ? (
-                  <span className="animate-spin inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
-                ) : (
-                  <>
-                    <Zap className="w-4 h-4 fill-black" />
-                    <span>Instant Demo</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
+
+              {/* Switch Accounts button if accounts saved or user logged in */}
+              {(savedAccounts.length > 0 || user) && (
+                <button
+                  onClick={() => setSwitcherOpen(true)}
+                  className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 hover:text-white px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-all"
+                >
+                  <ArrowRightLeft className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Switch Accounts</span>
+                </button>
+              )}
+
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/app/dashboard"
+                    className="btn-neon text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-1.5"
+                  >
+                    <span>Dashboard</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      navigate('/');
+                    }}
+                    title="Log Out"
+                    className="p-2 text-white/50 hover:text-red-400 hover:bg-white/5 rounded-xl transition-all"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleDemoLogin}
+                  disabled={loading}
+                  className="btn-neon text-xs sm:text-sm font-extrabold uppercase tracking-wider flex items-center gap-2"
+                >
+                  {loading ? (
+                    <span className="animate-spin inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+                  ) : (
+                    <>
+                      <Zap className="w-4 h-4 fill-black" />
+                      <span>Instant Demo</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -672,6 +710,12 @@ export default function LandingPage() {
           <span className="text-emerald-400">MOTIONSITES STYLE</span>
         </div>
       </footer>
+
+      {/* Account Switcher Modal */}
+      <AccountSwitcherModal
+        isOpen={switcherOpen}
+        onClose={() => setSwitcherOpen(false)}
+      />
     </div>
   );
 }

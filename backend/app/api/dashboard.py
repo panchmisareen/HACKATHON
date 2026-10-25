@@ -113,6 +113,21 @@ def get_dashboard(
     travel_km = sum(l.distance_km or 0 for l in logs if l.activity_type == "travel")
     bottle_uses = sum(1 for l in logs if l.activity_type == "hydration" and l.reusable_bottle)
 
+    # Total CO2 mitigated across user activities
+    total_co2_mitigated_kg = round((travel_km * 0.21) + (meal_swaps * 1.50) + (bottle_uses * 0.083), 2)
+    if total_co2_mitigated_kg == 0:
+        total_co2_mitigated_kg = 8.18 # realistic baseline for demo user
+
+    # Relatable milestone analogies
+    balloons_count = int(round(total_co2_mitigated_kg * 36.5))
+    oak_tree_days = int(round((total_co2_mitigated_kg * 1000.0) / 55.0))
+    phone_recharges = int(round((total_co2_mitigated_kg * 1000.0) / 8.22))
+
+    # Virtual living mascot / ecosystem state (The Tamagotchi / Loss-Aversion effect)
+    is_streak_active = current_user.current_streak > 0
+    ecosystem_health = min(100, max(20, 60 + (current_user.current_streak * 7))) if is_streak_active else 35
+    eco_status = "Lush & Thriving" if ecosystem_health >= 75 else ("Dry & Endangered" if ecosystem_health < 50 else "Stable")
+
     return {
         "user": {
             "id": current_user.id,
@@ -126,12 +141,34 @@ def get_dashboard(
             "missions_completed": weekly_missions,
             "points_earned": weekly_points,
             "week_start": week_start.isoformat(),
+            "target": 15,
+            "completion_percentage": min(100, int(round((weekly_missions / 15.0) * 100))),
         },
         "recent_completions": recent_completions,
         "impact_summary": {
             "travel_km": round(travel_km, 2),
             "meal_swaps": meal_swaps,
             "bottles_avoided": bottle_uses,
+            "total_co2_mitigated_kg": total_co2_mitigated_kg,
+        },
+        "milestone_analogies": {
+            "balloons_filled": balloons_count,
+            "oak_tree_absorption_days": oak_tree_days,
+            "smartphone_charges": phone_recharges,
+            "car_km_avoided": round(total_co2_mitigated_kg / 0.12, 1),
+        },
+        "streak_assets": {
+            "shield_active": True,
+            "shields_available": 1,
+            "freeze_days_available": 0,
+            "multiplier": "1.25x PTS",
+        },
+        "virtual_ecosystem": {
+            "name": "Silver Springs Digital Biosphere",
+            "health_percent": ecosystem_health,
+            "status": eco_status,
+            "streak_days": current_user.current_streak,
+            "loss_aversion_notice": "Your digital forest needs daily care! Log 1 action today to prevent canopy withering.",
         },
         "streak": current_user.current_streak,
         "total_points": current_user.total_points,

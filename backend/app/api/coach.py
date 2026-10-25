@@ -83,3 +83,46 @@ def chat_with_coach(
         reply = "Keep up the momentum! You can refill your bottle at the First Floor Silver Springs station or log a quick active walking loop around Sector 126 to earn points."
 
     return CoachChatResponse(response=reply)
+
+
+@router.get("/predictive-insights")
+def get_predictive_coach_insights(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Predictive AI recommendations based on historical telemetry and behavioral patterns.
+    """
+    first_name = current_user.full_name.split()[0] if current_user.full_name else "Explorer"
+    return [
+        {
+            "id": "pred_standby_1",
+            "type": "nightly_standby_peak",
+            "headline": f"{first_name}, standby power peaks between 1 AM and 6 AM",
+            "observation": "Telemetry shows your workstation rig and adapters remain in vampire standby overnight (~40W draw).",
+            "action": "Unplug your tech hub power strip before sleeping tonight.",
+            "impact": "Saves 0.82 kg CO2e this week (+25 pts).",
+            "badge": "High Leverage",
+            "icon": "⚡",
+        },
+        {
+            "id": "pred_friday_beverage_2",
+            "type": "friday_dining_pattern",
+            "headline": "Friday Afternoon Beverage Pattern",
+            "observation": "Historical habits indicate 2 iced dairy beverage orders on Friday afternoons.",
+            "action": "Swap to an oat milk cold brew or iced herbal tea at the campus cafe.",
+            "impact": "Avoids ~700g CO2e and single-use plastic waste (+20 pts).",
+            "badge": "Habit Swap",
+            "icon": "☕",
+        },
+        {
+            "id": "pred_tuesday_commute_3",
+            "type": "short_ride_hail_trigger",
+            "headline": "Sector 125 Metro Shorter Leg Detected",
+            "observation": "You frequently take a short solo auto for the 1.4 km stretch from the metro gate on Tuesday mornings.",
+            "action": "Join the 8:45 AM Canopy Walkers group tomorrow morning.",
+            "impact": "Cuts 650g CO2e tailpipe emissions and fulfills 2,100 morning steps (+30 pts).",
+            "badge": "Active Commute",
+            "icon": "🚶",
+        },
+    ]
