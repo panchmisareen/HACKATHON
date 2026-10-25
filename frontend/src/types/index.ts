@@ -11,6 +11,7 @@ export interface User {
   total_points: number;
   points?: number;
   current_streak: number;
+  streak_days?: number;
   longest_streak: number;
   is_demo: boolean;
   daily_hydration_goal_ml: number;
@@ -217,6 +218,48 @@ export interface MarketplaceItem {
   icon: string;
   badge: string;
   in_stock: boolean;
+  required_streak?: number;
+  requires_lowest_footprint?: boolean;
+}
+
+export interface FeedComment {
+  user: string;
+  avatar_color: string;
+  text: string;
+}
+
+export interface FeedPost {
+  id: string;
+  author_name: string;
+  author_username: string;
+  author_avatar_color: string;
+  author_hostel?: string;
+  title: string;
+  content: string;
+  image_url: string;
+  action_tag: string;
+  avoided_co2_kg: number;
+  likes_count: number;
+  liked_by_me: boolean;
+  verified_eco_proof: boolean;
+  timestamp: string;
+  comments: FeedComment[];
+}
+
+export interface LowestFootprintChampion {
+  name: string;
+  username: string;
+  avatar_color: string;
+  department: string;
+  hostel: string;
+  weekly_net_footprint_kg: number;
+  campus_average_footprint_kg: number;
+  total_avoided_co2_kg: number;
+  active_streak_days: number;
+  verified_clean_commute_km: number;
+  special_laureate_title: string;
+  exclusive_rewards: string[];
+  quote: string;
 }
 
 export interface ThriftListing {
@@ -239,6 +282,7 @@ export interface HostelTournamentStanding {
   name: string;
   type: string;
   members_active: number;
+  active_students_logging?: number;
   weekly_points: number;
   co2_mitigated_kg: number;
   streak_shield_rate: string;

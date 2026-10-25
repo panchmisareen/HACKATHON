@@ -14,6 +14,7 @@ import PassportPage from './pages/PassportPage';
 import CampusMapPage from './pages/CampusMapPage';
 import GoalsPage from './pages/GoalsPage';
 import ThriftClubPage from './pages/ThriftClubPage';
+import FeedPage from './pages/FeedPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path="carbon-engine" element={<Navigate to="/app/calculator" replace />} />
         <Route path="league" element={<LeaguePage />} />
         <Route path="thrift" element={<ThriftClubPage />} />
+        <Route path="feed" element={<FeedPage />} />
         <Route path="passport" element={<PassportPage />} />
         <Route path="map" element={<CampusMapPage />} />
         <Route path="goals" element={<GoalsPage />} />

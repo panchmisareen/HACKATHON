@@ -7,17 +7,18 @@
 @layer base {
   :root {
     --eco-green: #15803D;
-    --eco-green-dark: #0F172A;
-    --eco-green-light: #BBF7D0;
-    --eco-bg: #F4F4F0;
+    --eco-green-dark: #1C2615;
+    --eco-green-light: #EDF2E8;
+    --eco-bg: #F8FAF6;
     --eco-surface: #FFFFFF;
-    --eco-text: #0F172A;
-    --eco-muted: #64748B;
-    --eco-border: #E2E8F0;
-    --studio-bg: #F4F4F0;
-    --studio-noir: #121614;
+    --eco-text: #1C2615;
+    --eco-muted: #4B5E39;
+    --eco-border: #D9E4D0;
+    --eco-olive: #3B4B2D;
+    --studio-bg: #F8FAF6;
+    --studio-noir: #1C2615;
     --kinetic-orange: #FF5500;
-    --kinetic-emerald: #00D26A;
+    --kinetic-emerald: #10B981;
   }
 
   * {
@@ -29,15 +30,15 @@
   }
 
   body {
-    background-color: #F4F4F0;
-    color: #0F172A;
-    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+    background-color: #F8FAF6;
+    color: #1C2615;
+    font-family: 'Outfit', 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.015em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
     letter-spacing: -0.03em;
   }
 

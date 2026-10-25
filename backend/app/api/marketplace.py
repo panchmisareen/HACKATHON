@@ -11,6 +11,61 @@ router = APIRouter(prefix="/marketplace", tags=["marketplace"])
 
 MARKETPLACE_ITEMS = [
     {
+        "id": "lowest_footprint_grand_prize",
+        "category": "laureate_grand_prize",
+        "title": "🏆 Golden Leaf Laureate Fellowship",
+        "description": "Exclusive grand prize awarded to the student with the lowest net carbon footprint on campus. Includes 1-Month 100% Free Organic Dining, Reserved Smart EV Bike Dock, and Presidential Eco-Medal.",
+        "cost_points": 0,
+        "icon": "👑",
+        "badge": "Lowest Footprint Hero",
+        "in_stock": True,
+        "requires_lowest_footprint": True,
+    },
+    {
+        "id": "streak_3d_perk",
+        "category": "streak_tier",
+        "title": "3-Day Spark: Free Plant-Milk Upgrade",
+        "description": "Unlocked at 3 consecutive logging days. Free oat, almond, or soy milk upgrade at all campus coffee bars.",
+        "cost_points": 100,
+        "icon": "⚡",
+        "badge": "3-Day Streak Tier",
+        "required_streak": 3,
+        "in_stock": True,
+    },
+    {
+        "id": "streak_7d_shield",
+        "category": "streak_tier",
+        "title": "7-Day Flame: Silver Streak Shield + Organic Tote",
+        "description": "Unlocked at 7-day streak. Protects your streak for 48h and grants a certified organic cotton campus tote bag.",
+        "cost_points": 250,
+        "icon": "🔥",
+        "badge": "7-Day Streak Tier",
+        "required_streak": 7,
+        "in_stock": True,
+    },
+    {
+        "id": "streak_14d_shuttle",
+        "category": "streak_tier",
+        "title": "14-Day Century: EV Shuttle Fast Pass",
+        "description": "Unlocked at 14-day streak. Priority boarding on all electric campus shuttles + 100 free library eco-pages.",
+        "cost_points": 500,
+        "icon": "⚡",
+        "badge": "14-Day Streak Tier",
+        "required_streak": 14,
+        "in_stock": True,
+    },
+    {
+        "id": "streak_30d_master",
+        "category": "streak_tier",
+        "title": "30-Day Master: Campus Eco-Bistro Banquet",
+        "description": "Unlocked at 30-day streak. Free 3-course organic celebratory dinner for two at the Campus Executive Bistro.",
+        "cost_points": 1200,
+        "icon": "🌟",
+        "badge": "30-Day Streak Tier",
+        "required_streak": 30,
+        "in_stock": True,
+    },
+    {
         "id": "streak_shield",
         "category": "streak_asset",
         "title": "Streak Shield (24h)",
@@ -156,6 +211,66 @@ class CreateThriftListingRequest(BaseModel):
 class ClaimThriftListingRequest(BaseModel):
     listing_id: str
     buyer_note: Optional[str] = "I would like to pick this up!"
+
+
+@router.get("/items")
+def get_marketplace_items():
+    """Returns available perks, streak milestone rewards, and special laureate prizes."""
+    return MARKETPLACE_ITEMS
+
+
+class RedeemPerkRequest(BaseModel):
+    item_id: str
+
+
+@router.post("/redeem")
+def redeem_marketplace_perk(
+    payload: RedeemPerkRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Redeem points or streak milestone perks."""
+    item = next((i for i in MARKETPLACE_ITEMS if i["id"] == payload.item_id), None)
+    if not item:
+        raise HTTPException(status_code=404, detail="Perk item not found")
+
+    cost = item.get("cost_points", 0)
+    user_points = current_user.total_points or 0
+
+    if item.get("requires_lowest_footprint"):
+        if (current_user.current_streak or 0) < 7 and user_points < 500:
+            raise HTTPException(
+                status_code=400,
+                detail="🏆 The Golden Leaf Laureate is awarded to the top zero-footprint student champion of the month! Log daily to qualify."
+            )
+
+    if cost > 0 and user_points < cost:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Insufficient green points! You have {user_points} pts but need {cost} pts."
+        )
+
+    required_streak = item.get("required_streak", 0)
+    if (current_user.current_streak or 0) < required_streak:
+        raise HTTPException(
+            status_code=400,
+            detail=f"This perk requires a {required_streak}-day streak! Your current streak is {current_user.current_streak or 0} days."
+        )
+
+    current_user.total_points = max(0, user_points - cost)
+    db.commit()
+    db.refresh(current_user)
+
+    redemption_code = f"ECO-{uuid.uuid4().hex[:6].upper()}"
+
+    return {
+        "success": True,
+        "item_id": item["id"],
+        "item_title": item["title"],
+        "redemption_code": redemption_code,
+        "remaining_points": current_user.total_points,
+        "message": f"🎉 Successfully claimed '{item['title']}'! Voucher Code: {redemption_code}. Show at campus hub to collect."
+    }
 
 
 @router.get("/thrift")

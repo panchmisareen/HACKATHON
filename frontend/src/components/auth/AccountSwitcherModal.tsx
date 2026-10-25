@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Users, Check, ArrowRightLeft, PlusCircle, LogOut,
-  Trash2, ShieldCheck, X, Sparkles, User, AlertCircle
+  Trash2, ShieldCheck, X, Sparkles, User, AlertCircle, Palette
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { authService, type SavedAccount } from '../../services/auth.service';
 import { getInitials } from '../../utils';
 import { triggerConfetti } from '../../utils/confetti';
+import { NeonAvatar, NEON_COLORS } from '../ui/CarbonElements';
 
 interface AccountSwitcherModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface AccountSwitcherModalProps {
 }
 
 export default function AccountSwitcherModal({ isOpen, onClose }: AccountSwitcherModalProps) {
-  const { user, savedAccounts, switchAccount, removeAccount, logout, logoutAll } = useAuth();
+  const { user, savedAccounts, switchAccount, removeAccount, updateUser, logout, logoutAll } = useAuth();
   const navigate = useNavigate();
   const [demoAccounts, setDemoAccounts] = useState<any[]>([]);
   const [loadingId, setLoadingId] = useState<number | null>(null);
@@ -48,6 +49,13 @@ export default function AccountSwitcherModal({ isOpen, onClose }: AccountSwitche
       setErrorMsg('Failed to switch account.');
     } finally {
       setLoadingId(null);
+    }
+  };
+
+  const handleColorChange = (hex: string) => {
+    if (user) {
+      updateUser({ ...user, avatar_color: hex });
+      triggerConfetti();
     }
   };
 
@@ -105,36 +113,61 @@ export default function AccountSwitcherModal({ isOpen, onClose }: AccountSwitche
           {/* Active Account Section */}
           {user && (
             <div>
-              <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2">
-                Active Session
+              <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>Active Session</span>
+                <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                  <Palette className="w-3 h-3" /> Neon Glow
+                </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-300 shadow-xs flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-xs font-black shadow-sm flex-shrink-0 ring-2 ring-emerald-500 ring-offset-2"
-                    style={{ backgroundColor: user.avatar_color || '#15803D' }}
-                  >
-                    {getInitials(user.full_name)}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5 font-bold text-sm text-slate-900">
-                      <span>{user.full_name}</span>
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white">
-                        ✓ ACTIVE
-                      </span>
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-300 shadow-xs space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <NeonAvatar
+                      name={user.full_name}
+                      color={user.avatar_color || '#00F0FF'}
+                      size="md"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1.5 font-bold text-sm text-slate-900">
+                        <span>{user.full_name}</span>
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white">
+                          ✓ ACTIVE
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-500 font-mono truncate max-w-[200px]">
+                        {user.email}
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-500 font-mono truncate max-w-[200px]">
-                      {user.email}
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-xs font-black text-emerald-800 font-mono">
+                      {user.total_points} pts
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-mono">
+                      {user.current_streak}d streak 🔥
                     </div>
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-xs font-black text-emerald-800 font-mono">
-                    {user.total_points} pts
-                  </div>
-                  <div className="text-[10px] text-slate-400 font-mono">
-                    {user.current_streak}d streak 🔥
+                {/* Neon Profile Icon Color Picker */}
+                <div className="pt-2 border-t border-emerald-200/70 flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-slate-600">Choose Neon Avatar Glow:</span>
+                  <div className="flex items-center gap-1.5">
+                    {NEON_COLORS.map((nc) => (
+                      <button
+                        key={nc.hex}
+                        type="button"
+                        onClick={() => handleColorChange(nc.hex)}
+                        title={nc.name}
+                        className={`w-5 h-5 rounded-full transition-all ${
+                          user.avatar_color === nc.hex
+                            ? 'ring-2 ring-black scale-110 shadow-md'
+                            : 'hover:scale-105'
+                        }`}
+                        style={{ backgroundColor: nc.hex }}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -156,12 +189,11 @@ export default function AccountSwitcherModal({ isOpen, onClose }: AccountSwitche
                       className="p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 flex items-center justify-between transition-all"
                     >
                       <div className="flex items-center gap-3">
-                        <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                          style={{ backgroundColor: acc.avatar_color || '#26734D' }}
-                        >
-                          {getInitials(acc.full_name)}
-                        </div>
+                        <NeonAvatar
+                          name={acc.full_name}
+                          color={acc.avatar_color || '#FFE600'}
+                          size="sm"
+                        />
                         <div>
                           <div className="font-bold text-xs text-slate-900">{acc.full_name}</div>
                           <div className="text-[11px] text-slate-500 font-mono">{acc.email}</div>
@@ -172,7 +204,7 @@ export default function AccountSwitcherModal({ isOpen, onClose }: AccountSwitche
                         <button
                           disabled={loadingId === acc.user_id}
                           onClick={() => handleSwitch(acc.user_id)}
-                          className="px-3 py-1.5 rounded-xl bg-[#111613] hover:bg-emerald-600 text-white text-xs font-bold transition-all disabled:opacity-50"
+                          className="px-3 py-1.5 rounded-xl bg-[#1C2615] hover:bg-emerald-600 text-white text-xs font-bold transition-all disabled:opacity-50"
                         >
                           {loadingId === acc.user_id ? 'Switching…' : 'Switch'}
                         </button>
@@ -211,12 +243,11 @@ export default function AccountSwitcherModal({ isOpen, onClose }: AccountSwitche
                           : 'border-slate-200 bg-white hover:border-emerald-400 hover:shadow-xs'
                       }`}
                     >
-                      <div
-                        className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-[10px] font-black flex-shrink-0"
-                        style={{ backgroundColor: d.avatar_color || '#15803D' }}
-                      >
-                        {getInitials(d.full_name)}
-                      </div>
+                      <NeonAvatar
+                        name={d.full_name}
+                        color={d.avatar_color || '#39FF14'}
+                        size="sm"
+                      />
                       <div className="min-w-0 flex-1">
                         <div className="font-bold text-xs text-slate-900 truncate flex items-center gap-1">
                           <span className="truncate">{d.full_name}</span>
