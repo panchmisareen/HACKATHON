@@ -7,6 +7,65 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Core Hogwarts House Palettes
+        ravenclaw: {
+          bg: '#030712', // Void night blue
+          surface: '#0B132B',
+          card: '#0E1A38',
+          border: '#3A506B',
+          accent: '#38BDF8', // Celestial electric blue
+          silver: '#E2E8F0', // Luminescent silver
+          glow: 'rgba(56, 189, 248, 0.4)',
+        },
+        slytherin: {
+          bg: '#06140D', // Deep serpent dungeon
+          surface: '#0D2418',
+          card: '#122E20',
+          border: '#2D4A3A',
+          accent: '#10B981', // Ancient emerald flame
+          silver: '#CBD5E1', // Polished silver
+          glow: 'rgba(16, 185, 129, 0.4)',
+        },
+        gryffindor: {
+          bg: '#0F0C08', // Deep charcoal espresso leather
+          surface: '#1A1410',
+          card: '#241B15',
+          border: '#4A3525',
+          accent: '#991B1B', // Crimson red
+          gold: '#D97706', // Burnished gold
+          bronze: '#B45309',
+          glow: 'rgba(217, 119, 6, 0.4)',
+        },
+        hufflepuff: {
+          bg: '#12100E', // Rich espresso earth
+          surface: '#1C1814',
+          card: '#27221C',
+          border: '#574220',
+          accent: '#F59E0B', // Warm honey gold
+          sage: '#10B981', // Greenhouse sage leaf
+          glow: 'rgba(245, 158, 11, 0.4)',
+        },
+        patronus: {
+          bg: '#051014', // Forbidden forest midnight teal
+          surface: '#0A1B22',
+          card: '#0E2732',
+          border: '#164E63',
+          accent: '#22D3EE', // Patronus ethereal glow
+          silver: '#94A3B8', // Frost silver
+          glow: 'rgba(34, 211, 238, 0.4)',
+        },
+        silver: {
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
+        },
         forest: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -31,18 +90,9 @@ export default {
           lime: '#A3E635',
           cyan: '#2DD4BF',
         },
-        emerald: {
-          primary: '#26734D',
-          dark: '#12372A',
-          light: '#4ADE80',
-        },
         lime: {
           accent: '#D9F99D',
           bright: '#A3E635',
-        },
-        ivory: {
-          DEFAULT: '#F7F7F2',
-          dark: '#EEEDE8',
         },
         sage: {
           light: '#E8F5E9',
@@ -95,8 +145,10 @@ export default {
         }
       },
       fontFamily: {
+        magical: ['Cinzel', 'serif'],
+        ancient: ['Cinzel Decorative', 'Cinzel', 'serif'],
         sans: ['Outfit', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Space Grotesk', 'Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        display: ['Cinzel', 'Space Grotesk', 'Plus Jakarta Sans', 'serif'],
         tech: ['Space Grotesk', 'monospace', 'sans-serif'],
         outfit: ['Outfit', 'sans-serif'],
       },
@@ -104,12 +156,14 @@ export default {
         'eco': '0 1px 3px rgba(18, 55, 42, 0.08), 0 1px 2px rgba(18, 55, 42, 0.04)',
         'eco-md': '0 4px 6px rgba(18, 55, 42, 0.07), 0 2px 4px rgba(18, 55, 42, 0.05)',
         'eco-lg': '0 10px 15px rgba(18, 55, 42, 0.08), 0 4px 6px rgba(18, 55, 42, 0.05)',
-        'eco-xl': '0 20px 25px rgba(18, 55, 42, 0.10), 0 10px 10px rgba(18, 55, 42, 0.04)',
-        'card': '0 2px 8px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.08)',
-        'card-hover': '0 8px 32px rgba(0, 255, 135, 0.16), 0 2px 8px rgba(16, 185, 129, 0.12)',
         'neon': '0 0 20px rgba(0, 255, 135, 0.4), 0 0 40px rgba(0, 255, 135, 0.15)',
         'neon-lg': '0 0 35px rgba(0, 255, 135, 0.5), 0 0 70px rgba(16, 185, 129, 0.25)',
-        'glow-sm': '0 0 12px rgba(110, 231, 183, 0.25)',
+        'silver-glow': '0 0 15px rgba(226, 232, 240, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+        'patronus': '0 0 25px rgba(56, 189, 248, 0.35), 0 0 60px rgba(34, 211, 238, 0.15)',
+        'emerald-magic': '0 0 20px rgba(16, 185, 129, 0.35), inset 0 1px 1px rgba(203, 213, 225, 0.15)',
+        'gold-brazier': '0 0 25px rgba(217, 119, 6, 0.4), 0 0 50px rgba(153, 27, 27, 0.2)',
+        'card': '0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+        'card-hover': '0 8px 30px rgba(56, 189, 248, 0.2), inset 0 1px 0 rgba(226, 232, 240, 0.15)',
       },
       borderRadius: {
         '2xl': '1rem',
@@ -127,6 +181,9 @@ export default {
         'bounce-gentle': 'bounceGentle 1.5s ease-in-out infinite',
         'float-slow': 'floatSlow 4s ease-in-out infinite',
         'radar-spin': 'radarSpin 6s linear infinite',
+        'candle-flicker': 'candleFlicker 1.8s ease-in-out infinite alternate',
+        'patronus-wisp': 'patronusWisp 3s ease-in-out infinite',
+        'stardust-drift': 'stardustDrift 8s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -169,14 +226,28 @@ export default {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        candleFlicker: {
+          '0%, 100%': { opacity: '0.9', transform: 'scale(1) rotate(-1deg)' },
+          '25%': { opacity: '1', transform: 'scale(1.08) rotate(1deg)' },
+          '50%': { opacity: '0.82', transform: 'scale(0.96) rotate(-0.5deg)' },
+          '75%': { opacity: '0.97', transform: 'scale(1.04) rotate(0.8deg)' },
+        },
+        patronusWisp: {
+          '0%, 100%': { opacity: '0.7', filter: 'drop-shadow(0 0 10px #38BDF8)' },
+          '50%': { opacity: '1', filter: 'drop-shadow(0 0 25px #22D3EE)' },
+        },
+        stardustDrift: {
+          '0%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-20px) rotate(180deg)' },
+          '100%': { transform: 'translateY(0px) rotate(360deg)' },
+        },
       },
       backgroundImage: {
-        'gradient-eco': 'linear-gradient(135deg, #050806 0%, #0D1E14 50%, #09130D 100%)',
-        'gradient-neon': 'linear-gradient(135deg, #00FF87 0%, #60EFFF 100%)',
-        'gradient-emerald-glow': 'linear-gradient(135deg, #10B981 0%, #00FF87 100%)',
-        'gradient-leaf': 'linear-gradient(135deg, #26734D 0%, #4ADE80 100%)',
-        'gradient-card': 'linear-gradient(145deg, #0D1711 0%, #080D0A 100%)',
-        'shimmer-gradient': 'linear-gradient(90deg, transparent 0%, rgba(0,255,135,0.15) 50%, transparent 100%)',
+        'gradient-midnight': 'linear-gradient(135deg, #030712 0%, #0B132B 50%, #081026 100%)',
+        'gradient-emerald-silver': 'linear-gradient(135deg, #06140D 0%, #0D2418 50%, #122E20 100%)',
+        'gradient-gryffindor': 'linear-gradient(135deg, #0F0C08 0%, #1A1410 50%, #2B160F 100%)',
+        'gradient-silver': 'linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 50%, #94A3B8 100%)',
+        'gradient-patronus': 'linear-gradient(135deg, #051014 0%, #0A1B22 50%, #164E63 100%)',
       },
     },
   },

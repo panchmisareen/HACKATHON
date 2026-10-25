@@ -18,6 +18,7 @@ import type {
 import { Spinner, AvatarCircle } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
 import { triggerConfetti } from '../utils/confetti';
+import { magicAudio } from '../utils/magicAudio';
 import { CarbonFootprintIcon, NeonAvatar } from '../components/ui/CarbonElements';
 
 function RankIcon({ rank }: { rank: number }) {
@@ -38,7 +39,15 @@ export default function LeaguePage() {
   const [champion, setChampion] = useState<LowestFootprintChampion | null>(null);
 
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<'hostels' | 'marketplace' | 'thrift' | 'individual' | 'signage'>('hostels');
+  const [tab, setTab] = useState<'housecup' | 'hostels' | 'marketplace' | 'thrift' | 'individual' | 'signage'>('housecup');
+
+  // Interactive Hogwarts House Cup Braziers State
+  const [houseCupData, setHouseCupData] = useState([
+    { id: 'ravenclaw', name: 'Ravenclaw Starlight', crest: '🦅', points: 14820, avoidedCo2: 342.5, members: 380, flameColor: 'from-cyan-400 via-sky-500 to-blue-700', glowColor: '#38BDF8', motto: 'Wit & Analytical Zero-Emission Precision' },
+    { id: 'slytherin', name: 'Slytherin Emerald', crest: '🐍', points: 13950, avoidedCo2: 318.0, members: 365, flameColor: 'from-emerald-400 via-green-500 to-teal-800', glowColor: '#10B981', motto: 'Ambitious Resourcefulness & Dominance' },
+    { id: 'gryffindor', name: 'Gryffindor Fire', crest: '🦁', points: 12640, avoidedCo2: 295.4, members: 340, flameColor: 'from-amber-400 via-orange-500 to-red-700', glowColor: '#D97706', motto: 'Bold Courage in Every Weather Tempest' },
+    { id: 'hufflepuff', name: 'Hufflepuff Earth', crest: '🦡', points: 11890, avoidedCo2: 284.2, members: 395, flameColor: 'from-yellow-300 via-amber-400 to-amber-700', glowColor: '#F59E0B', motto: 'Grounded Stewardship & Greenhouse Living' },
+  ]);
 
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
   const [redeemSuccess, setRedeemSuccess] = useState<string | null>(null);
@@ -96,6 +105,18 @@ export default function LeaguePage() {
     }
   };
 
+  const handleStokeFlame = (houseId: string) => {
+    magicAudio.playFlameBurst();
+    setHouseCupData((prev) =>
+      prev.map((h) =>
+        h.id === houseId
+          ? { ...h, points: h.points + 50, avoidedCo2: +(h.avoidedCo2 + 1.2).toFixed(1) }
+          : h
+      )
+    );
+    triggerConfetti();
+  };
+
   const currentUser = individuals.find((e) => e.is_current_user);
   const streakItems = marketItems.filter((i) => i.category === 'streak_tier');
   const regularItems = marketItems.filter((i) => i.category !== 'streak_tier' && i.category !== 'champion_grand_prize');
@@ -148,8 +169,9 @@ export default function LeaguePage() {
       </div>
 
       {/* Modern Navigation Tabs */}
-      <div className="flex bg-olive-100/80 p-1 rounded-2xl overflow-x-auto gap-1 border border-olive-200 scrollbar-none">
+      <div className="flex bg-[#0B132B]/80 p-1 rounded-2xl overflow-x-auto gap-1 border border-slate-700/80 scrollbar-none shadow-inner">
         {[
+          { id: 'housecup', label: '🧙‍♂️ Hogwarts House Cup & Flames', count: 4 },
           { id: 'hostels', label: '🏆 Inter-Hostel Tournament', count: 12 },
           { id: 'marketplace', label: '🎁 Streak Perks & Marketplace', count: marketItems.length },
           { id: 'thrift', label: '♻️ Circular Thrift Hub', count: thriftListings.length },
@@ -160,12 +182,12 @@ export default function LeaguePage() {
             key={t.id}
             onClick={() => setTab(t.id as any)}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap ${
-              tab === t.id ? 'bg-[#1C2615] text-white shadow-sm' : 'text-olive-800 hover:text-[#1C2615]'
+              tab === t.id ? 'bg-sky-500 text-slate-950 shadow-md font-mono' : 'text-slate-300 hover:text-white'
             }`}
           >
             <span>{t.label}</span>
             {t.count !== undefined && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${tab === t.id ? 'bg-white/20 text-[#39FF14]' : 'bg-olive-200 text-olive-800'}`}>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${tab === t.id ? 'bg-black/20 text-slate-900' : 'bg-slate-800 text-slate-300'}`}>
                 {t.count}
               </span>
             )}
@@ -180,6 +202,128 @@ export default function LeaguePage() {
         </div>
       ) : (
         <>
+          {/* ======================================================== */}
+          {/* TAB 0: HOGWARTS HOUSE CUP & PULSING CREST FLAMES         */}
+          {/* ======================================================== */}
+          {tab === 'housecup' && (
+            <div className="space-y-8 animate-fade-in text-left">
+              {/* Grand Cup Hero Banner */}
+              <div className="relative p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-[#090D16] via-[#0B132B] to-[#040816] border-2 border-sky-400/40 shadow-[0_0_50px_rgba(56,189,248,0.2)] overflow-hidden">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 blur-[80px] rounded-full pointer-events-none" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="space-y-2 max-w-xl">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono font-bold uppercase bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full">
+                        HOGWARTS ECO-HOUSE CUP 2026
+                      </span>
+                      <span className="text-xs font-mono text-sky-300">✦ LIVE BRAZIERS ACTIVE</span>
+                    </div>
+                    <h2 className="text-2xl sm:text-4xl font-black font-magical text-white tracking-tight">
+                      The Elemental Braziers of Campus Merit
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                      Every verified pedal commute, plant-based dining swap, and standby wattage elimination feeds your House's enchanted fire. 
+                      The house with the highest flame at semester-end claims the eternal Silver Green Cup!
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-4 bg-black/60 p-4 rounded-2xl border border-slate-700 self-start md:self-auto flex-shrink-0">
+                    <div className="text-center">
+                      <div className="text-3xl">🏆</div>
+                      <div className="text-[10px] text-slate-400 font-mono uppercase mt-1">Leading House</div>
+                      <div className="text-sm font-bold text-sky-400 font-magical">Ravenclaw</div>
+                    </div>
+                    <div className="h-10 w-px bg-slate-800" />
+                    <div className="text-center">
+                      <div className="text-2xl font-black font-mono text-emerald-400">1,240 kg</div>
+                      <div className="text-[10px] text-slate-400 font-mono uppercase">Total Avoided CO₂</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* The 4 Floating House Crest Braziers */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {houseCupData.map((h, idx) => {
+                  const flameHeight = Math.min(100, Math.max(35, Math.round((h.points / 16000) * 100)));
+                  return (
+                    <div
+                      key={h.id}
+                      className="p-5 rounded-3xl bg-[#090D16] border-2 border-slate-700/80 hover:border-slate-400 transition-all duration-300 shadow-xl flex flex-col justify-between group relative overflow-hidden"
+                      style={{
+                        boxShadow: `0 8px 30px rgba(0,0,0,0.6), 0 0 20px ${h.glowColor}20`,
+                      }}
+                    >
+                      <div>
+                        {/* Crest Header */}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-3xl group-hover:scale-110 transition-transform">{h.crest}</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-300 border border-white/10 font-bold">
+                            #{idx + 1} Place
+                          </span>
+                        </div>
+
+                        <h3 className="font-bold text-base font-magical text-white">{h.name}</h3>
+                        <p className="text-[10px] text-slate-400 font-serif italic mt-0.5">"{h.motto}"</p>
+
+                        {/* Interactive Animated Flame Brazier */}
+                        <div className="my-5 p-3 rounded-2xl bg-black/80 border border-slate-800 h-44 flex flex-col justify-end items-center relative overflow-hidden">
+                          {/* Ambient glow in brazier */}
+                          <div
+                            className="absolute inset-0 opacity-25 blur-lg pointer-events-none"
+                            style={{ backgroundColor: h.glowColor }}
+                          />
+
+                          {/* The Dynamic Pulsing Flame */}
+                          <div
+                            className={`w-14 rounded-t-full bg-gradient-to-t ${h.flameColor} animate-candle-flicker transition-all duration-700`}
+                            style={{
+                              height: `${flameHeight}%`,
+                              filter: `drop-shadow(0 0 16px ${h.glowColor})`,
+                            }}
+                          />
+
+                          {/* Iron Brazier Pedestal Base */}
+                          <div className="w-20 h-4 rounded-b-lg bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 border-t border-slate-500 shadow-md relative z-10" />
+                          <div className="text-[9px] font-mono text-slate-400 mt-1 relative z-10 uppercase tracking-widest">
+                            Flame Intensity: {flameHeight}%
+                          </div>
+                        </div>
+
+                        {/* Metrics */}
+                        <div className="space-y-1.5 font-mono text-xs">
+                          <div className="flex justify-between">
+                            <span className="text-slate-400">Total Merits:</span>
+                            <span className="text-white font-black text-sm">{h.points.toLocaleString()} pts</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400">Avoided CO₂:</span>
+                            <span className="text-emerald-400 font-bold">-{h.avoidedCo2} kg</span>
+                          </div>
+                          <div className="flex justify-between text-[11px]">
+                            <span className="text-slate-500">Active Students:</span>
+                            <span className="text-slate-300">{h.members} Logging</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Stoke House Flame Button */}
+                      <button
+                        onClick={() => handleStokeFlame(h.id)}
+                        className="mt-5 w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-slate-600 hover:border-slate-300 text-white font-mono text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-sm"
+                      >
+                        <Flame size={14} className="text-orange-400 fill-orange-400 animate-pulse" />
+                        <span>Stoke Flame (+50 pts)</span>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Ornate Filigree Line */}
+              <div className="filigree-divider" />
+            </div>
+          )}
           {/* ======================================================== */}
           {/* TAB 1: INTER-HOSTEL & INTER-DEPARTMENT TOURNAMENT GRID */}
           {/* ======================================================== */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
+import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/layout/AppLayout';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
@@ -15,6 +16,8 @@ import CampusMapPage from './pages/CampusMapPage';
 import GoalsPage from './pages/GoalsPage';
 import ThriftClubPage from './pages/ThriftClubPage';
 import FeedPage from './pages/FeedPage';
+import PensievePage from './pages/PensievePage';
+import SortingHatPage from './pages/SortingHatPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -44,6 +47,8 @@ function AppRoutes() {
         <Route path="league" element={<LeaguePage />} />
         <Route path="thrift" element={<ThriftClubPage />} />
         <Route path="feed" element={<FeedPage />} />
+        <Route path="pensieve" element={<PensievePage />} />
+        <Route path="sorting-hat" element={<SortingHatPage />} />
         <Route path="passport" element={<PassportPage />} />
         <Route path="map" element={<CampusMapPage />} />
         <Route path="goals" element={<GoalsPage />} />
@@ -58,9 +63,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

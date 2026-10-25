@@ -14,6 +14,7 @@ import type { DashboardData, MarketplaceItem } from '../types';
 import { Spinner } from '../components/ui';
 import { timeAgo, getCategoryConfig } from '../utils';
 import { useAuth } from '../hooks/useAuth';
+import DailySpellQuestCard from '../components/magical/DailySpellQuestCard';
 
 export default function DashboardPage() {
   const { user, updatePoints } = useAuth();
@@ -611,6 +612,63 @@ export default function DashboardPage() {
               <Smartphone size={15} />
               <span>Preview Ambient Widget</span>
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* MAGICAL HOGWARTS ECO-SANCTUARY & DAILY SPELL QUEST */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="lg:col-span-6">
+          <DailySpellQuestCard />
+        </div>
+
+        <div className="lg:col-span-6 p-6 rounded-3xl bg-gradient-to-br from-[#090D16] via-[#0B132B] to-[#040816] border border-slate-700/80 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col justify-between text-left space-y-4">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-sky-400 font-bold flex items-center gap-1.5">
+                <Sparkles size={13} />
+                <span>HOGWARTS ECO-SANCTUARY</span>
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-300">
+                Midnight & Silver
+              </span>
+            </div>
+
+            <h3 className="font-bold text-xl font-magical text-white">
+              The Ancient Halls of Carbon Mitigation
+            </h3>
+            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              Explore your crystallized climate memories in the swirling Pensieve, test your spirit with the Sorting Hat, or stoke the flames of the House Cup.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2.5 pt-2">
+            <Link
+              to="/app/pensieve"
+              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-slate-800 hover:border-sky-400 transition-all text-center group"
+            >
+              <div className="text-xl mb-1 group-hover:scale-110 transition-transform">🏺</div>
+              <div className="text-xs font-bold text-white font-magical">Pensieve</div>
+              <div className="text-[9px] text-slate-400 font-mono">Memory Vault</div>
+            </Link>
+
+            <Link
+              to="/app/sorting-hat"
+              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-slate-800 hover:border-amber-400 transition-all text-center group"
+            >
+              <div className="text-xl mb-1 group-hover:scale-110 transition-transform">🧙‍♂️</div>
+              <div className="text-xs font-bold text-white font-magical">Sorting Hat</div>
+              <div className="text-[9px] text-slate-400 font-mono">House Match</div>
+            </Link>
+
+            <Link
+              to="/app/league"
+              className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-slate-800 hover:border-emerald-400 transition-all text-center group"
+            >
+              <div className="text-xl mb-1 group-hover:scale-110 transition-transform">🏆</div>
+              <div className="text-xs font-bold text-white font-magical">House Cup</div>
+              <div className="text-[9px] text-slate-400 font-mono">Crest Flames</div>
+            </Link>
           </div>
         </div>
       </div>

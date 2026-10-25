@@ -2,22 +2,28 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Target, Zap, Trophy, BookOpen, MapPin,
-  Settings, LogOut, Leaf, Menu, X, ChevronRight, Flame, Sparkles, Calculator, Recycle, ArrowRightLeft, Camera, Footprints
+  Settings, LogOut, Leaf, Menu, X, ChevronRight, Flame, Sparkles,
+  Calculator, Recycle, ArrowRightLeft, Camera, Footprints, Wand2,
+  Volume2, VolumeX, Compass
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getInitials } from '../../utils';
 import AccountSwitcherModal from '../auth/AccountSwitcherModal';
 import { NeonAvatar, CarbonFootprintIcon } from '../ui/CarbonElements';
+import { useTheme, HOGWARTS_HOUSES, type HouseTheme } from '../../context/ThemeContext';
+import { magicAudio } from '../../utils/magicAudio';
 
 const navItems = [
   { to: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/app/feed', icon: Camera, label: 'Pulse Feed' },
+  { to: '/app/pensieve', icon: Sparkles, label: 'Pensieve Vault' },
+  { to: '/app/sorting-hat', icon: Compass, label: 'Sorting Hat' },
+  { to: '/app/league', icon: Trophy, label: 'Hogwarts League' },
   { to: '/app/missions', icon: Target, label: 'Missions' },
   { to: '/app/coach', icon: Zap, label: 'Smart Coach' },
   { to: '/app/impact', icon: Leaf, label: 'Impact Analytics' },
   { to: '/app/calculator', icon: Calculator, label: 'Carbon Engine' },
   { to: '/app/thrift', icon: Recycle, label: 'Thrift Club' },
-  { to: '/app/league', icon: Trophy, label: 'Campus League' },
   { to: '/app/passport', icon: BookOpen, label: 'Eco Passport' },
   { to: '/app/map', icon: MapPin, label: 'Campus Map' },
   { to: '/app/goals', icon: Settings, label: 'Goals & Profile' },
@@ -25,32 +31,42 @@ const navItems = [
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
+  const { house, setHouse, houseDetails, allHouses } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(magicAudio.isSoundEnabled());
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const handleToggleSound = () => {
+    const nextState = magicAudio.toggleSound();
+    setSoundEnabled(nextState);
+  };
+
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#F8FAF6] text-[#1C2615] border-r border-[#D9E4D0] font-sans">
+    <div className="flex flex-col h-full bg-[#0B132B] text-slate-100 border-r border-slate-700/80 font-sans shadow-xl">
       {/* Brand Header */}
-      <div className="p-6 border-b border-[#D9E4D0] bg-white/60">
+      <div className="p-6 border-b border-slate-700/80 bg-[#070D1E]/60">
         <NavLink to="/app/dashboard" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1C2615] to-[#2B3821] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300 ring-1 ring-emerald-500/30">
-            <span className="text-emerald-400 font-bold text-lg">✦</span>
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0B132B] to-[#16274E] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300 ring-1 ring-sky-500/30">
+            <span className="text-sky-400 font-bold text-lg font-magical">{houseDetails.crest}</span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-display font-extrabold text-lg text-[#1C2615] tracking-tight">EcoPulse</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">STUDIO</span>
+              <span className="font-magical font-black text-lg text-white tracking-tight">EcoPulse</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-bold border border-sky-400/30">
+                {house.toUpperCase()}
+              </span>
             </div>
-            <div className="text-[11px] text-[#4B5E39] font-medium flex items-center gap-1">
-              <span>Better habits. Lighter footprint.</span>
-              <CarbonFootprintIcon className="w-3 h-3 text-emerald-600 inline" />
+            <div className="text-[11px] text-slate-400 font-serif italic flex items-center gap-1">
+              <span>Midnight Magic & Silver</span>
             </div>
           </div>
         </NavLink>
@@ -58,25 +74,25 @@ export default function AppLayout() {
 
       {/* User Card with Glowing Neon Avatar */}
       {user && (
-        <div className="p-4 mx-4 mt-4 rounded-2xl bg-[#EDF2E8] border border-[#D9E4D0] shadow-xs">
+        <div className="p-4 mx-4 mt-4 rounded-2xl bg-[#0E1A38] border border-slate-700 shadow-sm">
           <div className="flex items-center gap-3">
             <NeonAvatar
               name={user.full_name}
-              color={user.avatar_color || '#00F0FF'}
+              color={user.avatar_color || '#38BDF8'}
               size="md"
             />
             <div className="min-w-0 flex-1">
-              <div className="font-bold text-sm text-[#1C2615] truncate flex items-center gap-1.5 font-display">
+              <div className="font-bold text-sm text-white truncate flex items-center gap-1.5 font-magical">
                 <span>{user.full_name}</span>
                 {user.is_demo && (
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">DEMO</span>
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">DEMO</span>
                 )}
               </div>
               <div className="flex items-center gap-1.5 mt-0.5 font-mono">
-                <span className="text-emerald-800 font-bold text-xs">{user.total_points.toLocaleString()} pts</span>
-                <span className="text-slate-400">·</span>
-                <span className="text-amber-700 font-semibold text-xs flex items-center gap-0.5">
-                  <Flame size={12} className="fill-amber-500 text-amber-500" />
+                <span className="text-sky-300 font-bold text-xs">{user.total_points.toLocaleString()} pts</span>
+                <span className="text-slate-500">·</span>
+                <span className="text-amber-400 font-semibold text-xs flex items-center gap-0.5">
+                  <Flame size={12} className="fill-amber-400 text-amber-400 candle-flame" />
                   {user.current_streak}d streak
                 </span>
               </div>
@@ -84,7 +100,7 @@ export default function AppLayout() {
             <button
               onClick={() => setSwitcherOpen(true)}
               title="Switch account on this device"
-              className="p-2 rounded-xl bg-white hover:bg-emerald-100/60 text-[#3B4B2D] hover:text-emerald-800 transition-all flex items-center shadow-xs"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all flex items-center shadow-xs"
             >
               <ArrowRightLeft size={14} />
             </button>
@@ -94,9 +110,9 @@ export default function AppLayout() {
 
       {/* Navigation Links */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#5C7348] px-3 mb-2 flex items-center justify-between">
-          <span>Campus Menu</span>
-          <Footprints className="w-3.5 h-3.5 text-emerald-600/70" />
+        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 px-3 mb-2 flex items-center justify-between">
+          <span>Hogwarts Chambers</span>
+          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
         </div>
         {navItems.map(({ to, icon: Icon, label }) => {
           const isActive = location.pathname.startsWith(to);
@@ -105,67 +121,42 @@ export default function AppLayout() {
               key={to}
               to={to}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 group ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-mono font-semibold transition-all duration-200 group ${
                 isActive
-                  ? 'bg-[#1C2615] text-white shadow-md ring-1 ring-emerald-500/30'
-                  : 'text-[#3B4B2D] hover:bg-[#EDF2E8] hover:text-[#1C2615]'
+                  ? 'bg-sky-500 text-slate-950 font-bold shadow-[0_0_15px_rgba(56,189,248,0.35)]'
+                  : 'text-slate-300 hover:bg-white/5 hover:text-white'
               }`}
             >
               <Icon
-                size={18}
-                className={isActive ? 'text-emerald-400' : 'text-[#5C7348] group-hover:text-emerald-700'}
+                size={16}
+                className={isActive ? 'text-slate-950' : 'text-slate-400 group-hover:text-sky-300'}
               />
               <span className="flex-1 tracking-tight">{label}</span>
-              {isActive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34D399]" />}
+              {isActive && <span className="w-1.5 h-1.5 rounded-full bg-slate-950" />}
             </NavLink>
           );
         })}
       </nav>
 
-      {/* Campus Active Pill */}
-      <NavLink
-        to="/app/league"
-        onClick={() => setMobileOpen(false)}
-        className="p-4 m-4 rounded-2xl bg-gradient-to-br from-[#1C2615] via-[#243625] to-[#162919] text-white relative overflow-hidden block hover:ring-2 hover:ring-emerald-400/50 transition-all group shadow-sm border border-emerald-500/20"
-      >
-        <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/15 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform" />
-        <div className="flex items-center justify-between mb-1.5">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-            </span>
-            <span className="text-[11px] font-mono text-emerald-300 font-bold uppercase tracking-wider">CAMPUS GRID LIVE</span>
-          </div>
-          <ChevronRight size={13} className="text-emerald-400 group-hover:translate-x-1 transition-transform" />
+      {/* Footer / Logout */}
+      <div className="p-4 border-t border-slate-800 bg-[#070D1E]/60 flex items-center justify-between">
+        <div className="text-[11px] font-mono text-slate-400">
+          <span>Hogwarts Eco Grid v2.6</span>
         </div>
-        <p className="text-xs text-white/80 leading-relaxed font-medium">
-          12 Hostels actively competing in Green Cup. View live standings & rewards.
-        </p>
-      </NavLink>
-
-      {/* Account Switcher and Logout Buttons */}
-      <div className="p-4 border-t border-[#D9E4D0] space-y-1.5 bg-white/40">
-        <button
-          onClick={() => setSwitcherOpen(true)}
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-[#1C2615] hover:bg-[#EDF2E8] hover:text-emerald-800 transition-all duration-150 w-full"
-        >
-          <ArrowRightLeft size={15} className="text-emerald-600" />
-          <span>Switch Accounts</span>
-        </button>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150 w-full"
+          className="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-white/5 transition-all flex items-center gap-1.5 text-xs font-mono"
+          title="Sign out"
         >
           <LogOut size={15} />
-          <span>Log Out</span>
+          <span>Exit</span>
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="flex h-screen bg-[#F8FAF6] text-[#1C2615] overflow-hidden antialiased">
+    <div className="flex h-screen bg-[#030712] text-slate-100 overflow-hidden antialiased font-sans">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-72 flex-shrink-0 z-30">
         <SidebarContent />
@@ -174,7 +165,7 @@ export default function AppLayout() {
       {/* Mobile Overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -188,7 +179,7 @@ export default function AppLayout() {
         <div className="absolute top-4 right-4 z-50">
           <button
             onClick={() => setMobileOpen(false)}
-            className="p-1.5 rounded-full text-slate-500 hover:bg-slate-200"
+            className="p-1.5 rounded-full text-slate-400 hover:bg-slate-800"
           >
             <X size={18} />
           </button>
@@ -197,33 +188,102 @@ export default function AppLayout() {
       </aside>
 
       {/* Main Layout Container */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-[#F8FAF6]">
-        {/* Mobile Header */}
-        <header className="lg:hidden flex items-center justify-between px-5 py-4 bg-[#F8FAF6] border-b border-[#D9E4D0] z-20">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl text-slate-700 hover:bg-[#EDF2E8]"
-          >
-            <Menu size={20} />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#1C2615] text-white flex items-center justify-center">
-              <span className="text-emerald-400 font-bold text-sm">✦</span>
-            </div>
-            <span className="font-display font-extrabold text-[#1C2615]">EcoPulse</span>
-          </div>
-          {user && (
+      <div className="flex-1 flex flex-col overflow-hidden bg-[#030712]">
+        {/* Desktop & Mobile Header Bar with House Theme Switcher & Audio */}
+        <header className="flex items-center justify-between px-5 py-3.5 bg-[#0B132B]/85 backdrop-blur-md border-b border-slate-700/80 z-20">
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => setSwitcherOpen(true)}
-              title="Switch Account"
+              onClick={() => setMobileOpen(true)}
+              className="p-2 rounded-xl text-slate-300 hover:bg-white/5 lg:hidden"
             >
-              <NeonAvatar
-                name={user.full_name}
-                color={user.avatar_color || '#00F0FF'}
-                size="sm"
-              />
+              <Menu size={20} />
             </button>
-          )}
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="text-xs font-magical font-bold text-white tracking-wider">
+                {houseDetails.name}
+              </span>
+              <span className="text-slate-600 font-mono">•</span>
+              <span className="text-[11px] text-slate-400 font-serif italic hidden md:inline">
+                {houseDetails.subtitle}
+              </span>
+            </div>
+          </div>
+
+          {/* Quick Magical Controls: Sound FX, House Palette Switcher, Account */}
+          <div className="flex items-center gap-2.5">
+            {/* Audio Wand Toggle */}
+            <button
+              onClick={handleToggleSound}
+              title={soundEnabled ? 'Mute Magical Audio' : 'Enable Magical Audio'}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-sky-300 border border-slate-700 transition-all flex items-center gap-1.5 text-xs font-mono"
+            >
+              {soundEnabled ? <Volume2 size={15} className="text-sky-400" /> : <VolumeX size={15} />}
+              <span className="hidden md:inline">{soundEnabled ? 'Sound ON' : 'Muted'}</span>
+            </button>
+
+            {/* House Theme Switcher Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
+                className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-slate-700 hover:border-slate-500 font-mono text-xs font-bold flex items-center gap-1.5 transition-all"
+              >
+                <span>{houseDetails.crest}</span>
+                <span className="hidden sm:inline">{houseDetails.name.split(' ')[0]}</span>
+                <span className="text-[10px] text-slate-400">▼</span>
+              </button>
+
+              {themeDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0B132B] border-2 border-slate-700 p-2 shadow-2xl z-50 animate-scale-in text-left space-y-1">
+                  <div className="px-3 py-1 text-[10px] font-mono text-slate-400 uppercase tracking-widest">
+                    Switch Hogwarts Palette
+                  </div>
+                  {allHouses.map((h) => (
+                    <button
+                      key={h.id}
+                      onClick={() => {
+                        setHouse(h.id);
+                        setThemeDropdownOpen(false);
+                        magicAudio.playSilverChime();
+                      }}
+                      className={`w-full p-2 rounded-xl text-xs font-mono flex items-center gap-2.5 transition-all text-left ${
+                        house === h.id
+                          ? 'bg-sky-500 text-slate-950 font-bold'
+                          : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-base">{h.crest}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold truncate">{h.name}</div>
+                        <div className="text-[9px] opacity-70 truncate">{h.subtitle}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Active Streak Candle Flame */}
+            {user && (
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-300 font-mono text-xs font-bold">
+                <Flame size={14} className="text-amber-400 fill-amber-400 candle-flame" />
+                <span>{user.current_streak}d</span>
+              </div>
+            )}
+
+            {user && (
+              <button
+                onClick={() => setSwitcherOpen(true)}
+                title="Switch Account"
+                className="ml-1"
+              >
+                <NeonAvatar
+                  name={user.full_name}
+                  color={user.avatar_color || '#38BDF8'}
+                  size="sm"
+                />
+              </button>
+            )}
+          </div>
         </header>
 
         {/* Scrollable Page Outlet */}

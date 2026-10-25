@@ -156,16 +156,20 @@ export default function LandingPage() {
             </Link>
 
             {/* Nav Links */}
-            <div className="hidden md:flex items-center gap-7">
-              <a href="#grid-hud" className="text-sm font-medium text-white/70 hover:text-[#00F0FF] transition-colors">Clean Grid</a>
-              <a href="#feed-highlight" className="text-sm font-medium text-cyan-300 hover:text-white transition-colors flex items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5 text-[#00F0FF]" />
+            <div className="hidden md:flex items-center gap-6">
+              <a href="#grid-hud" className="text-sm font-medium text-white/70 hover:text-sky-400 transition-colors">Clean Grid</a>
+              <Link to="/app/feed" className="text-sm font-medium text-sky-300 hover:text-white transition-colors flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5 text-sky-400" />
                 <span>Pulse Feed</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-[#FF1493]/20 text-[#FF1493] border border-[#FF1493]/30">HOT</span>
-              </a>
-              <a href="#missions" className="text-sm font-medium text-white/70 hover:text-[#00F0FF] transition-colors">Micro-Missions</a>
-              <a href="#simulator" className="text-sm font-medium text-white/70 hover:text-[#00F0FF] transition-colors">Impact Simulator</a>
-              <a href="#league" className="text-sm font-medium text-white/70 hover:text-[#00F0FF] transition-colors">Hostel League</a>
+              </Link>
+              <Link to="/app/pensieve" className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1.5">
+                <span>🏺 Pensieve</span>
+              </Link>
+              <Link to="/app/sorting-hat" className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1.5">
+                <span>🧙‍♂️ Sorting Hat</span>
+              </Link>
+              <a href="#simulator" className="text-sm font-medium text-white/70 hover:text-sky-400 transition-colors">Simulator</a>
+              <Link to="/app/league" className="text-sm font-medium text-white/70 hover:text-sky-400 transition-colors">House Cup</Link>
             </div>
 
             {/* Actions */}

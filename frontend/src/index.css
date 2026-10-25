@@ -350,6 +350,83 @@
   .bg-accent-meals { background-color: #F7FEE7; }
   .bg-accent-movement { background-color: #FAF5FF; }
   .bg-accent-hydration { background-color: #EFF6FF; }
+
+  /* ========================================================= */
+  /* HARRY POTTER DARK BLUE & SILVER (MIDNIGHT MAGIC) UTILITIES */
+  /* ========================================================= */
+  .font-magical {
+    font-family: 'Cinzel', 'Space Grotesk', serif;
+    letter-spacing: 0.04em;
+  }
+
+  .font-ancient {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  }
+
+  /* Ornate Silver Filigree Dividers */
+  .filigree-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(203, 213, 225, 0.4) 30%, rgba(255, 255, 255, 0.8) 50%, rgba(203, 213, 225, 0.4) 70%, transparent 100%);
+    position: relative;
+    margin: 1.5rem 0;
+  }
+
+  .filigree-divider::after {
+    content: "✦";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #CBD5E1;
+    font-size: 11px;
+    padding: 0 8px;
+    background: var(--magic-bg, #030712);
+  }
+
+  /* Silver Shimmer Text */
+  .text-silver-shimmer {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 80%, #CBD5E1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Lumos Blue Text */
+  .text-lumos {
+    background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #22D3EE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Emerald Magic Text */
+  .text-emerald-magic {
+    background: linear-gradient(135deg, #34D399 0%, #10B981 50%, #CBD5E1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Card Surfaces with Silver Halide Borders */
+  .card-magical {
+    background: #0B132B;
+    border: 1px solid rgba(58, 80, 107, 0.6);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-magical:hover {
+    border-color: rgba(203, 213, 225, 0.5);
+    box-shadow: 0 8px 32px rgba(56, 189, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.16);
+  }
+
+  /* Flickering Candle Flame */
+  .candle-flame {
+    display: inline-block;
+    animation: candleFlicker 1.8s ease-in-out infinite alternate;
+  }
+
+  /* Patronus Wisp */
+  .patronus-wisp {
+    animation: patronusWisp 3s ease-in-out infinite;
+  }
 }
 
 /* Leaflet Map & Marker Enhancements */

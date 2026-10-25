@@ -13,6 +13,7 @@ import type { CampusLocation } from '../types';
 import { Spinner } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
 import { triggerConfetti } from '../utils/confetti';
+import { magicAudio } from '../utils/magicAudio';
 
 const PW_IOI_COORDS: [number, number] = [28.54280, 77.33420];
 
@@ -161,6 +162,7 @@ export default function CampusMapPage() {
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [showCarpoolModal, setShowCarpoolModal] = useState(false);
   const [showIaqOverlay, setShowIaqOverlay] = useState(true);
+  const [maraudersMapMode, setMaraudersMapMode] = useState(false);
 
   // NFC Tap state
   const [tappingNfc, setTappingNfc] = useState(false);
@@ -445,6 +447,22 @@ export default function CampusMapPage() {
           </button>
 
           <button
+            onClick={() => {
+              magicAudio.playWandWhoosh();
+              setMaraudersMapMode(!maraudersMapMode);
+              triggerConfetti();
+            }}
+            className={`px-3.5 py-2 rounded-2xl font-mono font-bold text-xs flex items-center gap-1.5 shadow-xs transition-all ${
+              maraudersMapMode
+                ? 'bg-amber-400 text-slate-950 border-2 border-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
+                : 'bg-[#0B132B] text-amber-300 border border-amber-500/40 hover:bg-[#131F42]'
+            }`}
+          >
+            <Footprints size={14} className={maraudersMapMode ? 'animate-bounce-gentle text-slate-950' : 'text-amber-400'} />
+            <span>{maraudersMapMode ? '📜 Marauder’s Map: ON' : '📜 Marauder’s Map'}</span>
+          </button>
+
+          <button
             onClick={() => setAiDrawerOpen(true)}
             className="px-3.5 py-2 rounded-2xl bg-[#0A2518] text-[#00E575] hover:bg-stone-900 font-bold text-xs flex items-center gap-1.5 shadow-xs transition-all"
           >
@@ -453,6 +471,31 @@ export default function CampusMapPage() {
           </button>
         </div>
       </div>
+
+      {/* Marauder's Map Mode Magical Parchment Banner */}
+      {maraudersMapMode && (
+        <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#1A1208] via-[#2A1D0E] to-[#120D06] border-2 border-amber-500/50 shadow-xl text-amber-200 flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono text-xs animate-scale-in">
+          <div className="flex items-center gap-3">
+            <div className="text-3xl">📜✨</div>
+            <div>
+              <div className="font-bold text-sm text-amber-300 font-magical">
+                "Messrs Moony, Wormtail, Padfoot & Prongs Present the Marauder's Carbon Map"
+              </div>
+              <div className="text-[11px] text-amber-300/80 italic font-serif">
+                ✦ I solemnly swear that I am up to no waste ✦
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <span className="px-3 py-1 rounded-xl bg-black/60 border border-amber-500/40 text-[10px] text-amber-300 font-mono">
+              Cloudinary SVG Heatmap: Active
+            </span>
+            <span className="px-3 py-1 rounded-xl bg-amber-400 text-black font-bold text-[10px] font-mono">
+              Pacing Footprints: 12 Active
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* IAQ Ambient Air Quality Sensor Strip */}
       {showIaqOverlay && (
