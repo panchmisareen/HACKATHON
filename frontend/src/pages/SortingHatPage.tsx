@@ -4,7 +4,7 @@ import {
   Sparkles, Award, ArrowRight, CheckCircle2, RotateCcw,
   Shield, Compass, Flame, Leaf, Feather
 } from 'lucide-react';
-import { useTheme, type HouseTheme, HOGWARTS_HOUSES } from '../context/ThemeContext';
+import { useTheme, type HouseTheme, ELEMENTAL_HOUSES } from '../context/ThemeContext';
 import { magicAudio } from '../utils/magicAudio';
 import { triggerConfetti } from '../utils/confetti';
 
@@ -25,28 +25,34 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'How do you traverse the campus grounds between dawn lectures?',
     options: [
       {
-        text: 'Pedaling my geared iron steed with scientific cadence and telemetry tracking.',
-        house: 'ravenclaw',
-        icon: '🦅',
-        caption: 'Analytical, calculated zero-emission velocity.'
+        text: 'Pedaling my geared iron steed along the water channels with scientific cadence and telemetry tracking.',
+        house: 'water',
+        icon: '🌊',
+        caption: 'Fluid kinetic velocity & precise telemetry (Blue and Silver).'
       },
       {
-        text: 'Commanding campus paths with unmatched focus, optimizing every transit shortcut.',
-        house: 'slytherin',
-        icon: '🐍',
-        caption: 'Ambitious, strategic, and remarkably efficient.'
+        text: 'Strolling peacefully on unpaved earthen trails, grounding with soil and fresh campus air.',
+        house: 'earth',
+        icon: '🌿',
+        caption: 'Grounded, patient zero-waste stewardship (Yellow and Black).'
       },
       {
-        text: 'Power-walking or running through all rain and tempest without hesitation.',
-        house: 'gryffindor',
-        icon: '🦁',
-        caption: 'Bold endurance and hearty courage.'
+        text: 'Power-sprinting through all morning tempests, driven by raw physical endurance.',
+        house: 'fire',
+        icon: '🔥',
+        caption: 'Bold endurance, hearty courage & grit (Red and Golden).'
       },
       {
-        text: 'Strolling peacefully alongside hostel peers, enjoying trees and fresh air.',
-        house: 'hufflepuff',
-        icon: '🦡',
-        caption: 'Grounded, patient, and deeply community-spirited.'
+        text: 'Gliding across high breezy walkways, optimizing every shortcut with strategic speed.',
+        house: 'air',
+        icon: '🌪️',
+        caption: 'Swift, resourceful ambition navigating currents (Emerald and Silver).'
+      },
+      {
+        text: 'Dawn cosmic stroll under fading constellations, mindfully traversing the silent quad.',
+        house: 'space',
+        icon: '🌌',
+        caption: 'Boundless cosmic poise & ethereal clarity (Black and Silver).'
       },
     ],
   },
@@ -55,28 +61,34 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What fills your plate when dining at the Great Campus Hall?',
     options: [
       {
-        text: 'High-protein legume salads & cold-pressed greens mathematically mapped for clean fuel.',
-        house: 'ravenclaw',
-        icon: '🥗',
-        caption: 'Scientific nutritional optimization with minimum emissions.'
+        text: 'High-protein legume bowls & cold-pressed hydration mathematically mapped for clean fuel.',
+        house: 'water',
+        icon: '🥣',
+        caption: 'Scientific nutritional optimization with zero emissions.'
       },
       {
-        text: 'The finest seasonal ingredients, proving that plant-based dining can dominate in taste.',
-        house: 'slytherin',
-        icon: '🌿',
+        text: 'Sun-ripened greenhouse vegetables and roasted root crops freshly harvested from local soil.',
+        house: 'earth',
+        icon: '🥕',
+        caption: 'Earth-honoring harvest from soil to bowl.'
+      },
+      {
+        text: 'Hearty spiced lentil curry and roasted grains that provide searing physical power.',
+        house: 'fire',
+        icon: '🍲',
+        caption: 'Robust fuel fueling fiery campus endeavors.'
+      },
+      {
+        text: 'Crisp seasonal farm salads and micro-greens proving plant dining commands superior taste.',
+        house: 'air',
+        icon: '🥗',
         caption: 'Refined standard of low-carbon excellence.'
       },
       {
-        text: 'Hearty whole-grain lentil stews that provide raw physical power for long days.',
-        house: 'gryffindor',
-        icon: '🍲',
-        caption: 'Robust fuel for brave campus endeavors.'
-      },
-      {
-        text: 'Sun-ripened greenhouse vegetables and roasted root crops grown locally.',
-        house: 'hufflepuff',
-        icon: '🥕',
-        caption: 'Earth-honoring harvest from soil to bowl.'
+        text: 'Minimalist whole superfoods and infused botanical elixirs for crystal-clear focus.',
+        house: 'space',
+        icon: '✨',
+        caption: 'Celestial nourishment with near-zero waste.'
       },
     ],
   },
@@ -85,28 +97,34 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'When midnight falls upon your dorm room, what is your power ethic?',
     options: [
       {
-        text: 'All chargers disconnected from the socket to eliminate 0.8 kWh of vampire draw.',
-        house: 'ravenclaw',
-        icon: '⚡',
-        caption: 'Vigilant elimination of hidden standby drains.'
+        text: 'All chargers unplugged from sockets to eliminate 0.8 kWh of vampire draw.',
+        house: 'water',
+        icon: '🌊',
+        caption: 'Vigilant elimination of hidden electric leakage.'
       },
       {
-        text: 'Smart plug automated schedules shut down heavy monitors before I even sleep.',
-        house: 'slytherin',
-        icon: '⏱️',
-        caption: 'Cunning automated dominion over the electric grid.'
+        text: 'Warm wool blankets, thick organic cotton layers, and zero electric heaters.',
+        house: 'earth',
+        icon: '🕯️',
+        caption: 'Cozy, organic thermal comfort in harmony with nature.'
       },
       {
         text: 'Cold showers and naturally breezy study pods over energy-heavy air conditioning.',
-        house: 'gryffindor',
-        icon: '💨',
-        caption: 'Embracing the rugged elements with pride.'
+        house: 'fire',
+        icon: '🔥',
+        caption: 'Embracing the raw elements with physical pride.'
       },
       {
-        text: 'Soft warm study lamps and layered wool blankets instead of electric heaters.',
-        house: 'hufflepuff',
-        icon: '🕯️',
-        caption: 'Cozy, organic comfort in harmony with nature.'
+        text: 'Smart plug automated schedules shut down heavy monitors before I even sleep.',
+        house: 'air',
+        icon: '⏱️',
+        caption: 'Cunning automated dominion over electric circuits.'
+      },
+      {
+        text: 'Complete blackout with only soft starlight; sleeping in total cosmic tranquility.',
+        house: 'space',
+        icon: '🌌',
+        caption: 'Pure darkness, restorative rest, zero lumen waste.'
       },
     ],
   },
@@ -115,28 +133,34 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'When an academic tome or tech asset concludes its semester purpose, what fate awaits it?',
     options: [
       {
-        text: 'Meticulously cataloged and traded via the Circular Thrift Club for maximum reuse.',
-        house: 'ravenclaw',
+        text: 'Meticulously cataloged and traded via Circular Thrift Club to preserve embodied carbon.',
+        house: 'water',
         icon: '📚',
-        caption: 'Knowledge preserved and embodied carbon conserved.'
+        caption: 'Knowledge preserved and embodied carbon saved.'
       },
       {
-        text: 'Negotiated for prime eco-points, securing top hostel rank and prestige.',
-        house: 'slytherin',
-        icon: '🏆',
-        caption: 'Uncompromising resourcefulness yielding tangible rewards.'
-      },
-      {
-        text: 'Gifted immediately to an incoming freshman who needs it most.',
-        house: 'gryffindor',
-        icon: '🎁',
-        caption: 'Noble generosity that empowers the next generation.'
-      },
-      {
-        text: 'Lovingly repaired, rebound, and kept in circulation indefinitely.',
-        house: 'hufflepuff',
+        text: 'Lovingly repaired, rebound, and kept in circulation season after season.',
+        house: 'earth',
         icon: '🧵',
         caption: 'Dedication to craftsmanship and zero waste.'
+      },
+      {
+        text: 'Gifted immediately to an incoming freshman teammate who needs it most.',
+        house: 'fire',
+        icon: '🎁',
+        caption: 'Noble generosity empowering the next vanguard.'
+      },
+      {
+        text: 'Negotiated for prime eco-points, securing top leaderboard dominance and prestige.',
+        house: 'air',
+        icon: '🏆',
+        caption: 'Uncompromising resourcefulness yielding real rewards.'
+      },
+      {
+        text: 'Digitized into the collective Pensieve cloud library so it endures eternally.',
+        house: 'space',
+        icon: '🔮',
+        caption: 'Infinite digital longevity with zero physical footprint.'
       },
     ],
   },
@@ -150,7 +174,7 @@ export default function SortingHatPage() {
   const [answers, setAnswers] = useState<HouseTheme[]>([]);
   const [sortingState, setSortingState] = useState<'quiz' | 'deliberating' | 'sorted'>('quiz');
   const [deliberationText, setDeliberationText] = useState('');
-  const [sortedHouse, setSortedHouse] = useState<HouseTheme>('ravenclaw');
+  const [sortedHouse, setSortedHouse] = useState<HouseTheme>('water');
 
   const handleSelectOption = (chosenHouse: HouseTheme) => {
     magicAudio.playSilverChime();
@@ -160,7 +184,6 @@ export default function SortingHatPage() {
     if (currentStep + 1 < QUIZ_QUESTIONS.length) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Calculate resulting house
       concludeSorting(updated);
     }
   };
@@ -170,16 +193,18 @@ export default function SortingHatPage() {
     magicAudio.playWandWhoosh();
 
     const counts: Record<HouseTheme, number> = {
-      ravenclaw: 0,
-      slytherin: 0,
-      gryffindor: 0,
-      hufflepuff: 0,
-      patronus: 0,
+      water: 0,
+      earth: 0,
+      fire: 0,
+      air: 0,
+      space: 0,
     };
-    finalAnswers.forEach((h) => counts[h]++);
+    finalAnswers.forEach((h) => {
+      if (counts[h] !== undefined) counts[h]++;
+    });
 
     // Find highest count house
-    let winner: HouseTheme = 'ravenclaw';
+    let winner: HouseTheme = 'water';
     let maxCount = -1;
     (Object.keys(counts) as HouseTheme[]).forEach((h) => {
       if (counts[h] > maxCount) {
@@ -192,9 +217,9 @@ export default function SortingHatPage() {
 
     const dialogLines = [
       "Ah... difficult, very difficult...",
-      "I see a curious, resolute mind... plenty of discipline...",
-      "A fierce devotion to our campus earth and low carbon footprints...",
-      `Yes! There is no doubt where you belong... Better be... ${HOGWARTS_HOUSES[winner].name.toUpperCase()}!`
+      "I see a curious, resolute mind... immense discipline...",
+      "A fierce devotion to our campus and low carbon footprints...",
+      `Yes! There is no doubt where you belong... Better be... ${ELEMENTAL_HOUSES[winner].name.toUpperCase()}!`
     ];
 
     let lineIndex = 0;
@@ -219,20 +244,23 @@ export default function SortingHatPage() {
     setSortingState('quiz');
   };
 
+  const houseData = ELEMENTAL_HOUSES[sortedHouse];
+  const sortedTextColor = sortedHouse === 'fire' ? '#FFFFFF' : '#000000';
+
   return (
     <div className="space-y-8 animate-fade-in text-slate-100 max-w-4xl mx-auto pb-20">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase bg-[#0B132B] text-sky-400 border border-sky-500/30">
           <Sparkles size={12} className="text-sky-400" />
-          <span>CAMPUS ECO MATCHMAKER</span>
+          <span>ELEMENTAL ECO MATCHMAKER</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black font-magical tracking-tight text-white">
           The Sorting Hat <span className="text-silver-shimmer italic">Carbon Matchmaker</span>
         </h1>
         <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
           Place the ancient enchanted Sorting Hat upon your brow. 
-          Discover your true campus Eco-House and dynamically adapt the platform's mystical aesthetic to your spirit.
+          Discover your true elemental Eco-House (Water, Earth, Fire, Air, Space) and dynamically adapt the platform's mystical aesthetic to your spirit.
         </p>
       </div>
 
@@ -261,7 +289,7 @@ export default function SortingHatPage() {
           </div>
 
           {/* Options Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {QUIZ_QUESTIONS[currentStep].options.map((opt, i) => (
               <button
                 key={i}
@@ -269,7 +297,7 @@ export default function SortingHatPage() {
                 className="p-5 rounded-2xl bg-[#070D1E]/80 hover:bg-[#0E1A38] border border-slate-700/80 hover:border-sky-400 text-left transition-all duration-300 transform hover:-translate-y-1 shadow-md group flex flex-col justify-between"
               >
                 <div>
-                  <div className="text-2xl mb-2">{opt.icon}</div>
+                  <div className="text-3xl mb-2">{opt.icon}</div>
                   <h3 className="font-bold text-sm text-slate-100 group-hover:text-white leading-relaxed">
                     {opt.text}
                   </h3>
@@ -300,45 +328,71 @@ export default function SortingHatPage() {
 
       {/* SORTED STEP */}
       {sortingState === 'sorted' && (
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-[#0B132B] via-[#070D1E] to-[#040816] border-2 border-sky-400/80 shadow-[0_0_60px_rgba(56,189,248,0.3)] text-center space-y-8 animate-scale-in">
-          <div className="text-6xl mb-2">{HOGWARTS_HOUSES[sortedHouse].crest}</div>
+        <div
+          className="p-8 sm:p-12 rounded-3xl border-2 text-center space-y-8 animate-scale-in"
+          style={{
+            backgroundColor: houseData.surfaceHex,
+            borderColor: houseData.borderHex,
+            boxShadow: `0 0 60px ${houseData.glowHex}`,
+          }}
+        >
+          <div className="text-7xl mb-2">{houseData.crest}</div>
 
           <div className="space-y-2">
-            <div className="text-xs font-mono tracking-widest uppercase text-sky-400">
-              OFFICIAL HOGWARTS ECO-HOUSE ALLOCATION
+            <div
+              className="text-xs font-mono tracking-widest uppercase font-bold"
+              style={{ color: houseData.accentHex }}
+            >
+              OFFICIAL ELEMENTAL ECO-HOUSE ALLOCATION
             </div>
             <h2 className="text-3xl sm:text-5xl font-black font-magical text-white">
-              {HOGWARTS_HOUSES[sortedHouse].name}
+              {houseData.name}
             </h2>
-            <p className="text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
-              {HOGWARTS_HOUSES[sortedHouse].description}
+            <div
+              className="text-sm font-serif italic"
+              style={{ color: houseData.silverHex }}
+            >
+              Colors: <span className="font-bold">{houseData.colorsName}</span> • Element: {houseData.element}
+            </div>
+            <p className="text-sm text-slate-300 max-w-xl mx-auto leading-relaxed pt-2">
+              {houseData.description}
             </p>
           </div>
 
           {/* House Traits Pill */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto text-center font-mono text-xs">
-            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10">
               <div className="text-[10px] text-slate-400">MASCOT</div>
-              <div className="font-bold text-white mt-0.5">{HOGWARTS_HOUSES[sortedHouse].mascot}</div>
+              <div className="font-bold text-white mt-0.5">{houseData.mascot}</div>
             </div>
-            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[10px] text-slate-400">PRIMARY AESTHETIC</div>
-              <div className="font-bold text-sky-300 mt-0.5">{HOGWARTS_HOUSES[sortedHouse].subtitle.split(' ')[0]}</div>
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10">
+              <div className="text-[10px] text-slate-400">PALETTE COLORS</div>
+              <div
+                className="font-bold mt-0.5"
+                style={{ color: houseData.accentHex }}
+              >
+                {houseData.colorsName}
+              </div>
             </div>
-            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[10px] text-slate-400">HOUSE BADGE</div>
-              <div className="font-bold text-emerald-400 mt-0.5">Founders Crest</div>
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10">
+              <div className="text-[10px] text-slate-400">HOUSE CREST</div>
+              <div className="font-bold text-white mt-0.5">{houseData.crest} {houseData.name.split(' ')[0]}</div>
             </div>
-            <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10">
               <div className="text-[10px] text-slate-400">THEME APPLIED</div>
-              <div className="font-bold text-amber-300 mt-0.5">Active Everywhere</div>
+              <div className="font-bold text-emerald-400 mt-0.5">Active Everywhere</div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <button
               onClick={() => navigate('/app/dashboard')}
-              className="px-8 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm uppercase font-mono tracking-wider flex items-center gap-2 shadow-lg hover:shadow-sky-500/30 transition-all"
+              className="px-8 py-3.5 rounded-xl font-bold text-sm uppercase font-mono tracking-wider flex items-center gap-2 shadow-lg transition-all"
+              style={{
+                backgroundColor: houseData.accentHex,
+                color: sortedTextColor,
+                boxShadow: `0 0 20px ${houseData.glowHex}`,
+              }}
             >
               <span>Enter House Common Room</span>
               <ArrowRight size={15} />

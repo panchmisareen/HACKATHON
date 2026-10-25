@@ -28,7 +28,7 @@ interface PensieveMemory {
 const HISTORICAL_MEMORIES: PensieveMemory[] = [
   {
     id: 'mem_1',
-    title: 'Autumn 42-Kilometer Iron Steed Odyssey',
+    title: 'Autumn 42-Kilometer Water Channel Odyssey',
     date: 'October 14, 2026',
     semester: 'Autumn 2026',
     category: 'commute',
@@ -36,15 +36,15 @@ const HISTORICAL_MEMORIES: PensieveMemory[] = [
     points_earned: 240,
     vialColor: 'from-sky-400 to-blue-600',
     glowHex: '#38BDF8',
-    previewQuote: 'Pedaled through heavy morning mist across campus outer ring road...',
-    fullStory: 'A pristine week where all motor transport was banished. Logged 42 cumulative kilometers on the campus pedal cycle between Aryabhata Hostel and the Quantum Computing labs. Zero carbon fumes emitted.',
+    previewQuote: 'Pedaled through heavy morning mist across campus water paths...',
+    fullStory: 'A pristine week where all motor transport was banished. Logged 42 cumulative kilometers on the campus pedal cycle along the water canals between Aryabhata Hostel and the Quantum Computing labs. Zero carbon fumes emitted.',
     cloudinaryImage: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80',
-    waxSeal: '🦅 Ravenclaw Starlight Seal of Velocity',
+    waxSeal: '🌊 Water House Seal of Velocity (Blue & Silver)',
     verifiedBy: 'Cloudinary Google Vision AI (Confidence 99.1%)',
   },
   {
     id: 'mem_2',
-    title: 'The Great Dining Hall Plant-Fuel Feast',
+    title: 'The Great Dining Hall Clean Wind Plant Feast',
     date: 'September 28, 2026',
     semester: 'Autumn 2026',
     category: 'dining',
@@ -52,10 +52,10 @@ const HISTORICAL_MEMORIES: PensieveMemory[] = [
     points_earned: 350,
     vialColor: 'from-emerald-400 to-teal-600',
     glowHex: '#10B981',
-    previewQuote: 'Seven unbroken days of spiced chickpea & quinoa bowls...',
+    previewQuote: 'Seven unbroken days of crisp salads and spiced chickpea bowls...',
     fullStory: 'Replaced all high-emissions red meat dining hall entrees with nutrient-dense legumes, seasonal roasted root vegetables, and campus greenhouse greens. Slashed personal dietary footprint by 78%.',
     cloudinaryImage: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80',
-    waxSeal: '🐍 Slytherin Emerald Seal of Clean Dining',
+    waxSeal: '🌪️ Air House Seal of Clean Dining (Emerald & Silver)',
     verifiedBy: 'Dining Hall NFC Smart Register + Cloudinary Proof',
   },
   {
@@ -66,29 +66,45 @@ const HISTORICAL_MEMORIES: PensieveMemory[] = [
     category: 'thrift',
     avoided_co2_kg: 22.0,
     points_earned: 420,
-    vialColor: 'from-amber-400 to-orange-600',
-    glowHex: '#F59E0B',
+    vialColor: 'from-yellow-400 to-amber-600',
+    glowHex: '#FFE600',
     previewQuote: 'Handed down 3 pristine engineering tomes to incoming first-years...',
     fullStory: 'Prevented virgin timber pulp felling and toxic solvent book printing. Exchanged Calculus & Thermal Physics reference volumes via the PW IOI Circular Thrift Club with a junior in Bhabha Hall.',
     cloudinaryImage: 'https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=800&q=80',
-    waxSeal: '🦡 Hufflepuff Seal of Circular Stewardship',
+    waxSeal: '🌿 Earth House Seal of Circular Stewardship (Yellow & Black)',
     verifiedBy: 'Campus Circular Thrift Club Ledger',
   },
   {
     id: 'mem_4',
-    title: 'Midnight Standby Phantom Ward in Dorm Room',
+    title: 'Midnight Standby Flame Ward in Dorm Room',
     date: 'August 30, 2026',
     semester: 'Autumn 2026',
     category: 'energy',
     avoided_co2_kg: 6.4,
     points_earned: 180,
-    vialColor: 'from-indigo-400 to-purple-600',
-    glowHex: '#BD00FF',
+    vialColor: 'from-red-500 to-amber-600',
+    glowHex: '#EF4444',
     previewQuote: 'All electronics unplugged at 1 AM. Zero vampire wattage drawn...',
     fullStory: 'Banished standby electricity drains across monitors, gaming hubs, and heating coils for 30 consecutive nights. Smart plug verified zero vampire draw between 1 AM and 7 AM.',
     cloudinaryImage: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80',
-    waxSeal: '🦁 Gryffindor Seal of Vigilant Power',
+    waxSeal: '🔥 Fire House Seal of Vigilant Power (Red & Golden)',
     verifiedBy: 'Tuya Smart Plug Telemetry Stream',
+  },
+  {
+    id: 'mem_5',
+    title: 'Starlight Zero-Lumen Midnight Ward',
+    date: 'August 15, 2026',
+    semester: 'Autumn 2026',
+    category: 'energy',
+    avoided_co2_kg: 9.2,
+    points_earned: 260,
+    vialColor: 'from-slate-300 via-slate-500 to-slate-900',
+    glowHex: '#E2E8F0',
+    previewQuote: 'Cosmic silence and zero ambient lumen waste during night study...',
+    fullStory: 'Pioneered campus starlight pods utilizing passive daylight reflectors and zero artificial lumens during late night revision sessions.',
+    cloudinaryImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
+    waxSeal: '🌌 Space House Seal of Cosmic Purity (Black & Silver)',
+    verifiedBy: 'Campus Energy Monitor Telemetry',
   },
 ];
 
@@ -156,7 +172,7 @@ export default function PensievePage() {
         </div>
 
         {/* Interactive Floating Memory Vials */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 relative z-10">
           {HISTORICAL_MEMORIES.map((mem, idx) => (
             <div
               key={mem.id}

@@ -20,6 +20,7 @@ import { useAuth } from '../hooks/useAuth';
 import { triggerConfetti } from '../utils/confetti';
 import { magicAudio } from '../utils/magicAudio';
 import { CarbonFootprintIcon, NeonAvatar } from '../components/ui/CarbonElements';
+import { useTheme, type HouseTheme } from '../context/ThemeContext';
 
 function RankIcon({ rank }: { rank: number }) {
   if (rank === 1) return <span className="text-xl">🥇</span>;
@@ -30,6 +31,7 @@ function RankIcon({ rank }: { rank: number }) {
 
 export default function LeaguePage() {
   const { user, updatePoints } = useAuth();
+  const { house, setHouse } = useTheme();
   const [individuals, setIndividuals] = useState<LeaderboardEntry[]>([]);
   const [teams, setTeams] = useState<TeamLeaderboardEntry[]>([]);
   const [hostelStandings, setHostelStandings] = useState<HostelTournamentStanding[]>([]);
@@ -41,12 +43,79 @@ export default function LeaguePage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'housecup' | 'hostels' | 'marketplace' | 'thrift' | 'individual' | 'signage'>('housecup');
 
-  // Interactive Hogwarts House Cup Braziers State
-  const [houseCupData, setHouseCupData] = useState([
-    { id: 'ravenclaw', name: 'Ravenclaw Starlight', crest: '🦅', points: 14820, avoidedCo2: 342.5, members: 380, flameColor: 'from-cyan-400 via-sky-500 to-blue-700', glowColor: '#38BDF8', motto: 'Wit & Analytical Zero-Emission Precision' },
-    { id: 'slytherin', name: 'Slytherin Emerald', crest: '🐍', points: 13950, avoidedCo2: 318.0, members: 365, flameColor: 'from-emerald-400 via-green-500 to-teal-800', glowColor: '#10B981', motto: 'Ambitious Resourcefulness & Dominance' },
-    { id: 'gryffindor', name: 'Gryffindor Fire', crest: '🦁', points: 12640, avoidedCo2: 295.4, members: 340, flameColor: 'from-amber-400 via-orange-500 to-red-700', glowColor: '#D97706', motto: 'Bold Courage in Every Weather Tempest' },
-    { id: 'hufflepuff', name: 'Hufflepuff Earth', crest: '🦡', points: 11890, avoidedCo2: 284.2, members: 395, flameColor: 'from-yellow-300 via-amber-400 to-amber-700', glowColor: '#F59E0B', motto: 'Grounded Stewardship & Greenhouse Living' },
+  // Interactive Elemental House Cup Braziers State
+  const [houseCupData, setHouseCupData] = useState<Array<{
+    id: HouseTheme;
+    name: string;
+    crest: string;
+    points: number;
+    avoidedCo2: number;
+    members: number;
+    flameColor: string;
+    glowColor: string;
+    motto: string;
+    colorsName: string;
+  }>>([
+    {
+      id: 'water',
+      name: 'Water House',
+      crest: '🌊',
+      points: 14820,
+      avoidedCo2: 342.5,
+      members: 380,
+      flameColor: 'from-cyan-400 via-sky-500 to-blue-700',
+      glowColor: '#38BDF8',
+      motto: 'Fluid Wisdom & Analytical Zero-Emission Precision',
+      colorsName: 'Blue and Silver',
+    },
+    {
+      id: 'earth',
+      name: 'Earth House',
+      crest: '🌿',
+      points: 13950,
+      avoidedCo2: 326.0,
+      members: 395,
+      flameColor: 'from-yellow-300 via-amber-400 to-amber-700',
+      glowColor: '#FFE600',
+      motto: 'Fertile Ground & Circular Thrift Regeneration',
+      colorsName: 'Yellow and Black',
+    },
+    {
+      id: 'fire',
+      name: 'Fire House',
+      crest: '🔥',
+      points: 13140,
+      avoidedCo2: 308.4,
+      members: 340,
+      flameColor: 'from-amber-400 via-orange-500 to-red-700',
+      glowColor: '#EF4444',
+      motto: 'Bold Courage & Physical Climate Leadership',
+      colorsName: 'Red and Golden',
+    },
+    {
+      id: 'air',
+      name: 'Air House',
+      crest: '🌪️',
+      points: 12690,
+      avoidedCo2: 298.1,
+      members: 365,
+      flameColor: 'from-emerald-400 via-green-500 to-teal-800',
+      glowColor: '#10B981',
+      motto: 'High Winds, Resourcefulness & Green Cup Ambition',
+      colorsName: 'Emerald and Silver',
+    },
+    {
+      id: 'space',
+      name: 'Space House',
+      crest: '🌌',
+      points: 12150,
+      avoidedCo2: 284.6,
+      members: 310,
+      flameColor: 'from-slate-200 via-sky-300 to-indigo-600',
+      glowColor: '#E2E8F0',
+      motto: 'Infinite Cosmos, Starlight & Ethereal Longevity',
+      colorsName: 'Black and Silver',
+    },
   ]);
 
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
@@ -214,60 +283,96 @@ export default function LeaguePage() {
                   <div className="space-y-2 max-w-xl">
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-mono font-bold uppercase bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full">
-                        HOGWARTS ECO-HOUSE CUP 2026
+                        ELEMENTAL HOUSE CUP 2026
                       </span>
-                      <span className="text-xs font-mono text-sky-300">✦ LIVE BRAZIERS ACTIVE</span>
+                      <span className="text-xs font-mono text-sky-300">✦ 5 LIVE BRAZIERS ACTIVE</span>
                     </div>
                     <h2 className="text-2xl sm:text-4xl font-black font-magical text-white tracking-tight">
                       The Elemental Braziers of Campus Merit
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
                       Every verified pedal commute, plant-based dining swap, and standby wattage elimination feeds your House's enchanted fire. 
-                      The house with the highest flame at semester-end claims the eternal Silver Green Cup!
+                      The elemental house with the highest flame at semester-end claims the eternal Silver Green Cup!
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-4 bg-black/60 p-4 rounded-2xl border border-slate-700 self-start md:self-auto flex-shrink-0">
-                    <div className="text-center">
-                      <div className="text-3xl">🏆</div>
-                      <div className="text-[10px] text-slate-400 font-mono uppercase mt-1">Leading House</div>
-                      <div className="text-sm font-bold text-sky-400 font-magical">Ravenclaw</div>
-                    </div>
-                    <div className="h-10 w-px bg-slate-800" />
-                    <div className="text-center">
-                      <div className="text-2xl font-black font-mono text-emerald-400">1,240 kg</div>
-                      <div className="text-[10px] text-slate-400 font-mono uppercase">Total Avoided CO₂</div>
-                    </div>
-                  </div>
+                  {(() => {
+                    const leading = [...houseCupData].sort((a, b) => b.points - a.points)[0];
+                    const totalAvoided = houseCupData.reduce((acc, h) => acc + h.avoidedCo2, 0).toFixed(1);
+                    return (
+                      <div className="flex items-center gap-4 bg-black/60 p-4 rounded-2xl border border-slate-700 self-start md:self-auto flex-shrink-0">
+                        <div className="text-center">
+                          <div className="text-3xl">{leading.crest}</div>
+                          <div className="text-[10px] text-slate-400 font-mono uppercase mt-1">Leading House</div>
+                          <div className="text-sm font-bold font-magical" style={{ color: leading.glowColor }}>
+                            {leading.name}
+                          </div>
+                        </div>
+                        <div className="h-10 w-px bg-slate-800" />
+                        <div className="text-center">
+                          <div className="text-2xl font-black font-mono text-emerald-400">{totalAvoided} kg</div>
+                          <div className="text-[10px] text-slate-400 font-mono uppercase">Total Avoided CO₂</div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
-              {/* The 4 Floating House Crest Braziers */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {/* The 5 Floating House Crest Braziers */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 {houseCupData.map((h, idx) => {
                   const flameHeight = Math.min(100, Math.max(35, Math.round((h.points / 16000) * 100)));
+                  const isActiveHouse = house === h.id;
                   return (
                     <div
                       key={h.id}
-                      className="p-5 rounded-3xl bg-[#090D16] border-2 border-slate-700/80 hover:border-slate-400 transition-all duration-300 shadow-xl flex flex-col justify-between group relative overflow-hidden"
+                      className="p-4 sm:p-5 rounded-3xl bg-[#090D16] border-2 transition-all duration-300 shadow-xl flex flex-col justify-between group relative overflow-hidden"
                       style={{
-                        boxShadow: `0 8px 30px rgba(0,0,0,0.6), 0 0 20px ${h.glowColor}20`,
+                        borderColor: isActiveHouse ? h.glowColor : 'rgba(51, 65, 85, 0.8)',
+                        boxShadow: isActiveHouse
+                          ? `0 0 30px ${h.glowColor}50, inset 0 0 15px ${h.glowColor}20`
+                          : `0 8px 30px rgba(0,0,0,0.6), 0 0 20px ${h.glowColor}20`,
                       }}
                     >
                       <div>
                         {/* Crest Header */}
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center justify-between mb-2">
                           <span className="text-3xl group-hover:scale-110 transition-transform">{h.crest}</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-300 border border-white/10 font-bold">
-                            #{idx + 1} Place
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            {isActiveHouse && (
+                              <span
+                                className="text-[9px] font-mono px-2 py-0.5 rounded-full font-bold"
+                                style={{
+                                  backgroundColor: `${h.glowColor}30`,
+                                  color: h.glowColor,
+                                  border: `1px solid ${h.glowColor}`,
+                                }}
+                              >
+                                ACTIVE
+                              </span>
+                            )}
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-300 border border-white/10 font-bold">
+                              #{idx + 1}
+                            </span>
+                          </div>
                         </div>
 
-                        <h3 className="font-bold text-base font-magical text-white">{h.name}</h3>
-                        <p className="text-[10px] text-slate-400 font-serif italic mt-0.5">"{h.motto}"</p>
+                        <h3 className="font-bold text-base font-magical text-white flex items-center justify-between">
+                          <span>{h.name}</span>
+                        </h3>
+                        <div
+                          className="text-[10px] font-mono font-semibold"
+                          style={{ color: h.glowColor }}
+                        >
+                          {h.colorsName}
+                        </div>
+                        <p className="text-[10px] text-slate-400 font-serif italic mt-1 line-clamp-2">
+                          "{h.motto}"
+                        </p>
 
                         {/* Interactive Animated Flame Brazier */}
-                        <div className="my-5 p-3 rounded-2xl bg-black/80 border border-slate-800 h-44 flex flex-col justify-end items-center relative overflow-hidden">
+                        <div className="my-4 p-3 rounded-2xl bg-black/80 border border-slate-800 h-40 flex flex-col justify-end items-center relative overflow-hidden">
                           {/* Ambient glow in brazier */}
                           <div
                             className="absolute inset-0 opacity-25 blur-lg pointer-events-none"
@@ -276,7 +381,7 @@ export default function LeaguePage() {
 
                           {/* The Dynamic Pulsing Flame */}
                           <div
-                            className={`w-14 rounded-t-full bg-gradient-to-t ${h.flameColor} animate-candle-flicker transition-all duration-700`}
+                            className={`w-12 rounded-t-full bg-gradient-to-t ${h.flameColor} animate-candle-flicker transition-all duration-700`}
                             style={{
                               height: `${flameHeight}%`,
                               filter: `drop-shadow(0 0 16px ${h.glowColor})`,
@@ -284,37 +389,53 @@ export default function LeaguePage() {
                           />
 
                           {/* Iron Brazier Pedestal Base */}
-                          <div className="w-20 h-4 rounded-b-lg bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 border-t border-slate-500 shadow-md relative z-10" />
+                          <div className="w-16 h-3.5 rounded-b-lg bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 border-t border-slate-500 shadow-md relative z-10" />
                           <div className="text-[9px] font-mono text-slate-400 mt-1 relative z-10 uppercase tracking-widest">
-                            Flame Intensity: {flameHeight}%
+                            Flame: {flameHeight}%
                           </div>
                         </div>
 
                         {/* Metrics */}
-                        <div className="space-y-1.5 font-mono text-xs">
+                        <div className="space-y-1 font-mono text-xs">
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Total Merits:</span>
-                            <span className="text-white font-black text-sm">{h.points.toLocaleString()} pts</span>
+                            <span className="text-slate-400">Merits:</span>
+                            <span className="text-white font-bold">{h.points.toLocaleString()} pts</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Avoided CO₂:</span>
+                            <span className="text-slate-400">Avoided:</span>
                             <span className="text-emerald-400 font-bold">-{h.avoidedCo2} kg</span>
                           </div>
                           <div className="flex justify-between text-[11px]">
-                            <span className="text-slate-500">Active Students:</span>
-                            <span className="text-slate-300">{h.members} Logging</span>
+                            <span className="text-slate-500">Students:</span>
+                            <span className="text-slate-300">{h.members}</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Stoke House Flame Button */}
-                      <button
-                        onClick={() => handleStokeFlame(h.id)}
-                        className="mt-5 w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-slate-600 hover:border-slate-300 text-white font-mono text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-sm"
-                      >
-                        <Flame size={14} className="text-orange-400 fill-orange-400 animate-pulse" />
-                        <span>Stoke Flame (+50 pts)</span>
-                      </button>
+                      {/* Action Buttons: Stoke Flame & Switch Theme */}
+                      <div className="mt-4 space-y-2">
+                        <button
+                          onClick={() => handleStokeFlame(h.id)}
+                          className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-slate-600 hover:border-slate-300 text-white font-mono text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 shadow-sm"
+                        >
+                          <Flame size={13} className="text-orange-400 fill-orange-400 animate-pulse" />
+                          <span>Stoke Flame (+50)</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setHouse(h.id);
+                            magicAudio.playSilverChime();
+                            triggerConfetti();
+                          }}
+                          className={`w-full py-1.5 rounded-xl text-[11px] font-mono font-bold transition-all border ${
+                            isActiveHouse
+                              ? 'bg-white/20 border-white text-white'
+                              : 'bg-black/40 border-slate-700 text-slate-400 hover:text-white hover:border-slate-500'
+                          }`}
+                        >
+                          {isActiveHouse ? 'Active House ✓' : `Apply ${h.name.split(' ')[0]} Theme`}
+                        </button>
+                      </div>
                     </div>
                   );
                 })}

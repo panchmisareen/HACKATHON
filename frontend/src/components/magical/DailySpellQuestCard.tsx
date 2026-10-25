@@ -3,6 +3,7 @@ import { Sparkles, Wand2, CheckCircle2, RotateCw, ExternalLink, ShieldCheck, X }
 import { magicAudio } from '../../utils/magicAudio';
 import { triggerConfetti } from '../../utils/confetti';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../context/ThemeContext';
 
 interface DailyQuest {
   id: string;
@@ -60,11 +61,13 @@ const DAILY_SPELLS: DailyQuest[] = [
 
 export default function DailySpellQuestCard() {
   const { updatePoints, user } = useAuth();
+  const { house, houseDetails } = useTheme();
   const [questIndex, setQuestIndex] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
 
   const quest = DAILY_SPELLS[questIndex];
+  const btnTextColor = house === 'fire' ? '#FFFFFF' : '#000000';
 
   const handleNextSpell = () => {
     magicAudio.playWandWhoosh();
@@ -87,17 +90,37 @@ export default function DailySpellQuestCard() {
 
   return (
     <>
-      <div className="p-6 rounded-3xl bg-gradient-to-br from-[#0B132B] via-[#0E1A38] to-[#040816] border border-sky-400/40 shadow-[0_4px_30px_rgba(56,189,248,0.15)] relative overflow-hidden text-left space-y-4">
+      <div
+        className="p-6 rounded-3xl border shadow-xl relative overflow-hidden text-left space-y-4 transition-colors duration-500"
+        style={{
+          backgroundColor: houseDetails.surfaceHex,
+          borderColor: houseDetails.borderHex,
+          boxShadow: `0 4px 30px ${houseDetails.glowHex}`,
+        }}
+      >
         {/* Glow corner */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-sky-500/10 blur-[60px] rounded-full pointer-events-none" />
+        <div
+          className="absolute top-0 right-0 w-48 h-48 blur-[60px] rounded-full pointer-events-none opacity-40"
+          style={{ backgroundColor: houseDetails.accentHex }}
+        />
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center text-sm font-bold border border-sky-500/30">
+            <span
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold border"
+              style={{
+                backgroundColor: `${houseDetails.accentHex}20`,
+                color: houseDetails.accentHex,
+                borderColor: `${houseDetails.accentHex}40`,
+              }}
+            >
               <Wand2 size={15} />
             </span>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-sky-400">
-              DAILY SPELL & ECO-QUEST
+            <span
+              className="text-[10px] font-mono font-bold uppercase tracking-wider"
+              style={{ color: houseDetails.accentHex }}
+            >
+              {houseDetails.name.toUpperCase()} · DAILY SPELL QUEST
             </span>
           </div>
 
@@ -110,12 +133,15 @@ export default function DailySpellQuestCard() {
           </button>
         </div>
 
-        <div>
+        <div className="relative z-10">
           <div className="text-2xl mb-1">{quest.icon}</div>
           <h3 className="font-bold text-lg font-magical text-white">
             {quest.spellName}
           </h3>
-          <p className="text-[11px] font-serif italic text-sky-300/90 mt-0.5">
+          <p
+            className="text-[11px] font-serif italic mt-0.5"
+            style={{ color: houseDetails.silverHex }}
+          >
             "{quest.incantation}"
           </p>
           <p className="text-xs text-slate-300 mt-2 leading-relaxed">
@@ -123,33 +149,38 @@ export default function DailySpellQuestCard() {
           </p>
         </div>
 
-        <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
+        <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono relative z-10">
           <div className="flex items-center gap-2">
             <span className="text-emerald-400 font-bold">-{quest.avoidedCo2} kg CO₂</span>
             <span className="text-slate-500">•</span>
-            <span className="text-sky-300 font-bold">+{quest.points} pts</span>
+            <span
+              className="font-bold"
+              style={{ color: houseDetails.accentHex }}
+            >
+              +{quest.points} pts
+            </span>
           </div>
 
           <button
             onClick={handleCastSpell}
             disabled={completed}
-            className={`px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all flex items-center gap-1.5 shadow-md active:scale-95 ${
               completed
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                : 'bg-sky-500 hover:bg-sky-400 text-slate-950 shadow-md hover:shadow-sky-500/20 active:scale-95'
+                : 'hover:brightness-110'
             }`}
+            style={
+              !completed
+                ? {
+                    backgroundColor: houseDetails.accentHex,
+                    color: btnTextColor,
+                    boxShadow: `0 0 15px ${houseDetails.glowHex}`,
+                  }
+                : undefined
+            }
           >
-            {completed ? (
-              <>
-                <CheckCircle2 size={13} />
-                <span>Spell Cast!</span>
-              </>
-            ) : (
-              <>
-                <Sparkles size={13} />
-                <span>Cast Spell (+{quest.points} pts)</span>
-              </>
-            )}
+            <Sparkles size={13} />
+            <span>{completed ? 'Spell Mastered ✓' : `Cast Spell (+${quest.points} pts)`}</span>
           </button>
         </div>
       </div>

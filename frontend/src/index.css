@@ -406,15 +406,35 @@
 
   /* Card Surfaces with Silver Halide Borders */
   .card-magical {
-    background: #0B132B;
-    border: 1px solid rgba(58, 80, 107, 0.6);
+    background: var(--magic-card, #0B132B);
+    border: 1px solid var(--magic-border, rgba(58, 80, 107, 0.6));
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.08);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .card-magical:hover {
-    border-color: rgba(203, 213, 225, 0.5);
-    box-shadow: 0 8px 32px rgba(56, 189, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.16);
+    border-color: var(--magic-silver, rgba(203, 213, 225, 0.5));
+    box-shadow: 0 8px 32px var(--magic-glow, rgba(56, 189, 248, 0.18)), inset 0 1px 1px rgba(255, 255, 255, 0.16);
+  }
+
+  /* Dynamic House Theming Classes */
+  .bg-house-bg {
+    background-color: var(--magic-bg, #040B1A);
+  }
+  .bg-house-surface {
+    background-color: var(--magic-surface, #091530);
+  }
+  .bg-house-card {
+    background-color: var(--magic-card, #0D1D40);
+  }
+  .border-house {
+    border-color: var(--magic-border, #385078);
+  }
+  .text-house-accent {
+    color: var(--magic-accent, #38BDF8);
+  }
+  .text-house-silver {
+    color: var(--magic-silver, #E2E8F0);
   }
 
   /* Flickering Candle Flame */
